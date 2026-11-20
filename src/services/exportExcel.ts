@@ -1,6 +1,5 @@
-// FLAVENCIA 2026 - Excel Generation Engine using SheetJS (xlsx)
+// FLAVENCIA 2026 - Excel Generation Engine using Dynamic SheetJS (xlsx)
 
-import * as XLSX from 'xlsx';
 import {
   IncomeRecord,
   ExpenseRecord,
@@ -8,12 +7,17 @@ import {
   TransactionRecord,
   AccountRecord,
   BudgetRecord,
-  TransferRecord,
-  FinalSettlementData
+  TransferRecord
 } from '../types/financial';
 import { formatDate } from '../utils/formatters';
 
-export function exportIncomeToExcel(incomes: IncomeRecord[], fileName: string = 'FLAVENCIA_2026_Income'): void {
+async function getXlsx() {
+  const xlsxModule = await import('xlsx');
+  return xlsxModule;
+}
+
+export async function exportIncomeToExcel(incomes: IncomeRecord[], fileName: string = 'FLAVENCIA_2026_Income'): Promise<void> {
+  const XLSX = await getXlsx();
   const data = incomes.map(item => ({
     'Income ID': item.incomeId,
     'Date (DD/MM/YYYY)': formatDate(item.date),
@@ -36,7 +40,8 @@ export function exportIncomeToExcel(incomes: IncomeRecord[], fileName: string = 
   XLSX.writeFile(wb, `${fileName}_${Date.now()}.xlsx`);
 }
 
-export function exportExpensesToExcel(expenses: ExpenseRecord[], fileName: string = 'FLAVENCIA_2026_Expenses'): void {
+export async function exportExpensesToExcel(expenses: ExpenseRecord[], fileName: string = 'FLAVENCIA_2026_Expenses'): Promise<void> {
+  const XLSX = await getXlsx();
   const data = expenses.map(item => ({
     'Expense ID': item.expenseId,
     'Date (DD/MM/YYYY)': formatDate(item.date),
@@ -62,7 +67,8 @@ export function exportExpensesToExcel(expenses: ExpenseRecord[], fileName: strin
   XLSX.writeFile(wb, `${fileName}_${Date.now()}.xlsx`);
 }
 
-export function exportTransactionsToExcel(transactions: TransactionRecord[], fileName: string = 'FLAVENCIA_2026_Transactions'): void {
+export async function exportTransactionsToExcel(transactions: TransactionRecord[], fileName: string = 'FLAVENCIA_2026_Transactions'): Promise<void> {
+  const XLSX = await getXlsx();
   const data = transactions.map(item => ({
     'Transaction ID': item.transactionId,
     'Date (DD/MM/YYYY)': formatDate(item.transactionDate),
@@ -84,7 +90,7 @@ export function exportTransactionsToExcel(transactions: TransactionRecord[], fil
   XLSX.writeFile(wb, `${fileName}_${Date.now()}.xlsx`);
 }
 
-export function exportFullFestivalWorkbook(
+export async function exportFullFestivalWorkbook(
   incomes: IncomeRecord[],
   expenses: ExpenseRecord[],
   payments: ExpensePaymentRecord[],
@@ -92,7 +98,8 @@ export function exportFullFestivalWorkbook(
   accounts: AccountRecord[],
   budgets: BudgetRecord[],
   transfers: TransferRecord[]
-): void {
+): Promise<void> {
+  const XLSX = await getXlsx();
   const wb = XLSX.utils.book_new();
 
   // 1. Accounts Summary

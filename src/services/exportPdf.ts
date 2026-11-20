@@ -1,13 +1,10 @@
-// FLAVENCIA 2026 - PDF Generation Engine using jsPDF & autoTable
+// FLAVENCIA 2026 - PDF Generation Engine using Dynamic jsPDF & autoTable
 
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import {
   FinalSettlementData,
   IncomeRecord,
   ExpenseRecord,
-  TransactionRecord,
-  BudgetRecord
+  TransactionRecord
 } from '../types/financial';
 import { formatCurrency, formatDate } from '../utils/formatters';
 
@@ -18,10 +15,21 @@ const COLOR_LIGHT_GOLD = [241, 229, 172]; // #F1E5AC Champagne Gold
 const COLOR_SLATE = [71, 85, 105]; // #475569 Slate
 const COLOR_BG_LIGHT = [248, 250, 252]; // #F8FAFC
 
+async function getPdfEngine() {
+  const [jsPdfModule, autoTableModule] = await Promise.all([
+    import('jspdf'),
+    import('jspdf-autotable')
+  ]);
+  const jsPDF = jsPdfModule.default;
+  const autoTable = autoTableModule.default;
+  return { jsPDF, autoTable };
+}
+
 /**
  * Generate Festival Final Settlement PDF Report
  */
-export function generateFinalSettlementPdf(data: FinalSettlementData): void {
+export async function generateFinalSettlementPdf(data: FinalSettlementData): Promise<void> {
+  const { jsPDF, autoTable } = await getPdfEngine();
   const doc = new jsPDF('portrait', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
   
@@ -217,7 +225,8 @@ export function generateFinalSettlementPdf(data: FinalSettlementData): void {
 /**
  * Generate Income Records PDF Report
  */
-export function generateIncomeReportPdf(incomes: IncomeRecord[], title: string = 'Income Report'): void {
+export async function generateIncomeReportPdf(incomes: IncomeRecord[], title: string = 'Income Report'): Promise<void> {
+  const { jsPDF, autoTable } = await getPdfEngine();
   const doc = new jsPDF('landscape', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -267,7 +276,8 @@ export function generateIncomeReportPdf(incomes: IncomeRecord[], title: string =
 /**
  * Generate Expense Records PDF Report
  */
-export function generateExpenseReportPdf(expenses: ExpenseRecord[], title: string = 'Expense Report'): void {
+export async function generateExpenseReportPdf(expenses: ExpenseRecord[], title: string = 'Expense Report'): Promise<void> {
+  const { jsPDF, autoTable } = await getPdfEngine();
   const doc = new jsPDF('landscape', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -324,7 +334,8 @@ export function generateExpenseReportPdf(expenses: ExpenseRecord[], title: strin
 /**
  * Generate Unified Transactions Ledger PDF
  */
-export function generateTransactionLedgerPdf(transactions: TransactionRecord[], title: string = 'Financial Transaction Ledger'): void {
+export async function generateTransactionLedgerPdf(transactions: TransactionRecord[], title: string = 'Financial Transaction Ledger'): Promise<void> {
+  const { jsPDF, autoTable } = await getPdfEngine();
   const doc = new jsPDF('landscape', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   TrendingUp,
   TrendingDown,
@@ -8,12 +8,16 @@ import {
   Sparkles
 } from 'lucide-react';
 import { FinancialSummaryCards } from './FinancialSummaryCards';
-import { ChartsSection } from './ChartsSection';
 import { RecentTransactionsTable } from './RecentTransactionsTable';
 import { AddIncomeModal } from '../income/AddIncomeModal';
 import { AddExpenseModal } from '../expenses/AddExpenseModal';
 import { TransferModal } from '../accounts/TransferModal';
 import { NavigationTab } from '../layout/Sidebar';
+
+// Lazy-load ChartsSection to isolate Recharts from initial load
+const ChartsSection = React.lazy(() =>
+  import('./ChartsSection').then(m => ({ default: m.ChartsSection }))
+);
 
 interface DashboardViewProps {
   onNavigate: (tab: NavigationTab) => void;
@@ -73,8 +77,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
       {/* Financial Summary Cards */}
       <FinancialSummaryCards />
 
-      {/* Analytics Charts */}
-      <ChartsSection />
+      {/* Analytics Charts with Lazy Suspense Fallback */}
+      <Suspense
+        fallback={
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
+            <div className="h-72 rounded-2xl bg-slate-100 dark:bg-[#121217] border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs text-slate-400">
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 border-2 border-gold-400 border-t-transparent rounded-full animate-spin" />
+                Loading Financial Velocity Charts...
+              </span>
+            </div>
+            <div className="h-72 rounded-2xl bg-slate-100 dark:bg-[#121217] border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs text-slate-400">
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
+                Loading Expense Allocation Charts...
+              </span>
+            </div>
+          </div>
+        }
+      >
+        <ChartsSection />
+      </Suspense>
 
       {/* Recent Ledger Transactions */}
       <RecentTransactionsTable onViewAll={() => onNavigate('transactions')} />

@@ -1,22 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FinanceProvider } from './context/FinanceContext';
 import { LoginPage } from './components/auth/LoginPage';
 import { Layout } from './components/layout/Layout';
 import { NavigationTab } from './components/layout/Sidebar';
-import { DashboardView } from './components/dashboard/DashboardView';
-import { IncomeList } from './components/income/IncomeList';
-import { ExpenseList } from './components/expenses/ExpenseList';
-import { PaymentHistoryList } from './components/payments/PaymentHistoryList';
-import { AccountCards } from './components/accounts/AccountCards';
-import { TransactionLedger } from './components/transactions/TransactionLedger';
-import { BudgetTracker } from './components/budgets/BudgetTracker';
-import { ReportsCenter } from './components/reports/ReportsCenter';
-import { FinalSettlementView } from './components/settlement/FinalSettlementView';
-import { CategoryManager } from './components/categories/CategoryManager';
-import { AuditLogViewer } from './components/audit/AuditLogViewer';
-import { SettingsView } from './components/settings/SettingsView';
+
+// Code-split all module views via React.lazy
+const DashboardView = React.lazy(() =>
+  import('./components/dashboard/DashboardView').then(m => ({ default: m.DashboardView }))
+);
+const IncomeList = React.lazy(() =>
+  import('./components/income/IncomeList').then(m => ({ default: m.IncomeList }))
+);
+const ExpenseList = React.lazy(() =>
+  import('./components/expenses/ExpenseList').then(m => ({ default: m.ExpenseList }))
+);
+const PaymentHistoryList = React.lazy(() =>
+  import('./components/payments/PaymentHistoryList').then(m => ({ default: m.PaymentHistoryList }))
+);
+const AccountCards = React.lazy(() =>
+  import('./components/accounts/AccountCards').then(m => ({ default: m.AccountCards }))
+);
+const TransactionLedger = React.lazy(() =>
+  import('./components/transactions/TransactionLedger').then(m => ({ default: m.TransactionLedger }))
+);
+const BudgetTracker = React.lazy(() =>
+  import('./components/budgets/BudgetTracker').then(m => ({ default: m.BudgetTracker }))
+);
+const ReportsCenter = React.lazy(() =>
+  import('./components/reports/ReportsCenter').then(m => ({ default: m.ReportsCenter }))
+);
+const FinalSettlementView = React.lazy(() =>
+  import('./components/settlement/FinalSettlementView').then(m => ({ default: m.FinalSettlementView }))
+);
+const CategoryManager = React.lazy(() =>
+  import('./components/categories/CategoryManager').then(m => ({ default: m.CategoryManager }))
+);
+const AuditLogViewer = React.lazy(() =>
+  import('./components/audit/AuditLogViewer').then(m => ({ default: m.AuditLogViewer }))
+);
+const SettingsView = React.lazy(() =>
+  import('./components/settings/SettingsView').then(m => ({ default: m.SettingsView }))
+);
+
+const ViewLoadingFallback: React.FC = () => (
+  <div className="py-24 flex flex-col items-center justify-center space-y-4">
+    <div className="relative w-12 h-12 flex items-center justify-center">
+      <div className="w-12 h-12 rounded-full border-2 border-gold-500/20 border-t-gold-500 animate-spin" />
+      <span className="absolute font-serif text-xs font-bold text-gold-400">F</span>
+    </div>
+    <div className="text-center">
+      <p className="text-xs font-bold tracking-widest uppercase text-slate-800 dark:text-slate-200">
+        Loading Module
+      </p>
+      <p className="text-[10px] text-slate-400">FLAVENCIA 2026 • Financial Console</p>
+    </div>
+  </div>
+);
 
 const MainApp: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -60,7 +101,9 @@ const MainApp: React.FC = () => {
   return (
     <FinanceProvider>
       <Layout activeTab={activeTab} onSelectTab={setActiveTab}>
-        {renderActiveView()}
+        <Suspense fallback={<ViewLoadingFallback />}>
+          {renderActiveView()}
+        </Suspense>
       </Layout>
     </FinanceProvider>
   );
