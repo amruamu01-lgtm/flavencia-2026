@@ -42,22 +42,17 @@ export const RecentTransactionsTable: React.FC<RecentTransactionsTableProps> = (
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-gray-200 text-gray-500 uppercase tracking-wider text-[10px]">
-                <th className="py-2.5 px-3">Txn ID</th>
                 <th className="py-2.5 px-3">Date</th>
                 <th className="py-2.5 px-3">Description</th>
                 <th className="py-2.5 px-3">Type</th>
                 <th className="py-2.5 px-3">Account</th>
-                <th className="py-2.5 px-3">Method</th>
                 <th className="py-2.5 px-3 text-right">Amount</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 font-medium">
               {recent.map(t => (
                 <tr key={t.transactionId} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-2.5 px-3 font-mono text-[11px] text-gray-500">
-                    {t.transactionId}
-                  </td>
-                  <td className="py-2.5 px-3 text-gray-700">
+                  <td className="py-2.5 px-3 text-gray-700 whitespace-nowrap">
                     {formatDate(t.transactionDate)}
                   </td>
                   <td className="py-2.5 px-3 max-w-xs truncate text-gray-900 font-medium" title={t.description}>
@@ -66,13 +61,10 @@ export const RecentTransactionsTable: React.FC<RecentTransactionsTableProps> = (
                   <td className="py-2.5 px-3">
                     <Badge type="direction" value={t.direction} />
                   </td>
-                  <td className="py-2.5 px-3 text-gray-700">
+                  <td className="py-2.5 px-3 text-gray-700 font-semibold whitespace-nowrap">
                     {t.accountName || t.accountId}
                   </td>
-                  <td className="py-2.5 px-3 text-gray-500">
-                    {t.paymentMethod}
-                  </td>
-                  <td className={`py-2.5 px-3 text-right font-bold ${
+                  <td className={`py-2.5 px-3 text-right font-bold whitespace-nowrap ${
                     t.direction === 'CREDIT' ? 'text-[#16A34A]' : 'text-[#DC2626]'
                   }`}>
                     {t.direction === 'CREDIT' ? '+' : '-'}{formatCurrency(t.amount)}

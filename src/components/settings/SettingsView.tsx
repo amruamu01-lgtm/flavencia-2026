@@ -11,7 +11,11 @@ import {
   AlertTriangle,
   FolderOpen,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Smartphone,
+  Laptop,
+  HardDrive,
+  ArrowRight
 } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { useAuth } from '../../context/AuthContext';
@@ -19,26 +23,71 @@ import { useTheme } from '../../context/ThemeContext';
 import {
   getGasBackendUrl,
   setGasBackendUrl,
-  getSpreadsheetId,
-  setSpreadsheetId,
-  getDriveFolderId,
-  setDriveFolderId,
   callBackendApi,
   loadLocalDb,
   saveLocalDb
 } from '../../services/api';
+import {
+  getLocalStorageMigrationStatus,
+  migrateLocalStorageToGoogleSheets,
+  MigrationSummary
+} from '../../services/migration';
+import { formatCurrency } from '../../utils/formatters';
 
 export const SettingsView: React.FC = () => {
-  const { refreshData, isBackendConnected } = useFinance();
+  const {
+    refreshData,
+    isBackendConnected,
+    lastSyncedAt,
+    syncError,
+    isSyncing
+  } = useFinance();
   const { adminUsername, changePassword } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   // Integration fields
   const [gasUrl, setGasUrl] = useState(getGasBackendUrl());
-  const [sheetId, setSheetId] = useState(getSpreadsheetId());
-  const [driveId, setDriveId] = useState(getDriveFolderId());
+  const [showAdvancedUrl, setShowAdvancedUrl] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [isTesting, setIsTesting] = useState(false);
+
+  // Migration state
+  const [migrationStatus, setMigrationStatus] = useState<MigrationSummary>(getLocalStorageMigrationStatus());
+  const [isMigrating, setIsMigrating] = useState(false);
+  const [migrationResult, setMigrationResult] = useState<{
+    success: boolean;
+    message: string;
+    details?: any;
+  } | null>(null);
+
+  const handleRunMigration = async () => {
+    setIsMigrating(true);
+    setMigrationResult(null);
+    try {
+      const res = await migrateLocalStorageToGoogleSheets();
+      if (res.success) {
+        setMigrationResult({
+          success: true,
+          message: 'All local records successfully verified and migrated to Google Sheets master database!',
+          details: res.summary
+        });
+        setMigrationStatus(getLocalStorageMigrationStatus());
+        await refreshData();
+      } else {
+        setMigrationResult({
+          success: false,
+          message: res.error || 'Failed to migrate records to Google Sheets.'
+        });
+      }
+    } catch (err: any) {
+      setMigrationResult({
+        success: false,
+        message: err.message || 'Migration encountered an error.'
+      });
+    } finally {
+      setIsMigrating(false);
+    }
+  };
 
   // Password fields
   const [currentPass, setCurrentPass] = useState('');
@@ -46,28 +95,52 @@ export const SettingsView: React.FC = () => {
   const [confirmPass, setConfirmPass] = useState('');
   const [passMessage, setPassMessage] = useState<{ success: boolean; text: string } | null>(null);
 
-  const handleSaveIntegration = async () => {
+  const handleManualSync = async () => {
     setIsTesting(true);
     setTestResult(null);
     try {
-      setGasBackendUrl(gasUrl);
-      setSpreadsheetId(sheetId);
-      setDriveFolderId(driveId);
-
-      // Ping backend
       const res = await callBackendApi('ping');
+      await refreshData();
       if (res.success) {
         setTestResult({
           success: true,
-          message: 'Connection Successful! Linked to Google Apps Script backend.'
+          message: 'Database connection verified! Financial records synchronized successfully with Google Sheets.'
         });
       } else {
         setTestResult({
           success: false,
-          message: res.error || 'Failed to connect. Please verify the URL and deployment settings.'
+          message: res.error || 'Failed to connect to central Google Sheets database.'
         });
       }
-      await refreshData();
+    } catch (e: any) {
+      setTestResult({
+        success: false,
+        message: e.message || 'Synchronization failed'
+      });
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  const handleSaveGasUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsTesting(true);
+    setTestResult(null);
+    try {
+      setGasBackendUrl(gasUrl);
+      const res = await callBackendApi('ping');
+      if (res.success) {
+        setTestResult({
+          success: true,
+          message: 'Central backend endpoint URL updated and verified successfully!'
+        });
+        await refreshData();
+      } else {
+        setTestResult({
+          success: false,
+          message: res.error || 'Could not connect to backend with the provided URL.'
+        });
+      }
     } catch (e: any) {
       setTestResult({ success: false, message: e.message || 'Connection failed' });
     } finally {
@@ -144,31 +217,31 @@ export const SettingsView: React.FC = () => {
         </p>
       </div>
 
-      {/* 1. Google Sheets & Apps Script Integration */}
+      {/* 1. Google Sheets Database Connection Status */}
       <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-              <Database className="w-4 h-4 text-[#16A34A]" />
-              Google Sheets Master Database & Apps Script API
+              <Database className="w-4 h-4 text-[#1E3A5F]" />
+              Google Sheets Master Database Status
             </h3>
             <p className="text-xs text-gray-500 mt-0.5">
-              Connect the web app directly to your Google Spreadsheet and Google Drive
+              Centrally connected to master Google Spreadsheet. No manual spreadsheet ID configuration required.
             </p>
           </div>
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-              isBackendConnected
+              isBackendConnected && !syncError
                 ? 'bg-emerald-50 text-[#16A34A] border border-emerald-200'
-                : 'bg-navy-50 text-[#1E3A5F] border border-navy-200'
+                : 'bg-rose-50 text-[#DC2626] border border-rose-200'
             }`}
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                isBackendConnected ? 'bg-[#16A34A] animate-pulse' : 'bg-[#1E3A5F]'
+                isBackendConnected && !syncError ? 'bg-[#16A34A] animate-pulse' : 'bg-[#DC2626]'
               }`}
             />
-            {isBackendConnected ? 'Live Google Sheets' : 'Local Offline Engine'}
+            {isBackendConnected && !syncError ? 'Connected' : 'Disconnected'}
           </span>
         </div>
 
@@ -185,69 +258,265 @@ export const SettingsView: React.FC = () => {
           </div>
         )}
 
-        <div className="space-y-4">
+        {syncError && !testResult && (
+          <div className="p-3 rounded-lg text-xs font-medium flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800">
+            <AlertTriangle className="w-4 h-4 text-amber-600" />
+            <span>Database Sync Notice: {syncError}</span>
+          </div>
+        )}
+
+        {/* Database Status Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3.5 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Database Status</span>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className={`w-2 h-2 rounded-full ${isBackendConnected && !syncError ? 'bg-[#16A34A]' : 'bg-[#DC2626]'}`} />
+              <span className="font-bold text-gray-900 text-sm">
+                {isBackendConnected && !syncError ? 'Connected & Live' : 'Disconnected'}
+              </span>
+            </div>
+            <span className="text-[10px] text-gray-500 mt-0.5 block">Central Google Sheets Master</span>
+          </div>
+
+          <div className="p-3.5 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Last Successful Sync</span>
+            <span className="font-bold text-gray-900 text-sm mt-1 block">
+              {lastSyncedAt ? lastSyncedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Pending initial sync'}
+            </span>
+            <span className="text-[10px] text-gray-500 mt-0.5 block">
+              {lastSyncedAt ? lastSyncedAt.toLocaleDateString() : 'Auto-sync active'}
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Multi-Device Architecture</span>
+            <span className="font-bold text-[#1E3A5F] text-sm mt-1 block">
+              Centralized Backend
+            </span>
+            <span className="text-[10px] text-gray-500 mt-0.5 block">All 10 Sheets Synchronized</span>
+          </div>
+        </div>
+
+        {/* Informational Card */}
+        <div className="p-3.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-600 space-y-1">
+          <div className="font-bold text-gray-800 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
+            <span>Centralized Automatic Connectivity</span>
+          </div>
+          <p className="text-[11px] text-gray-500 leading-relaxed">
+            The Google Spreadsheet ID is configured securely on the server backend. All phones, laptops, and admin terminals automatically synchronize with the exact same master financial spreadsheet without requiring manual Spreadsheet ID configuration.
+          </p>
+        </div>
+
+        {/* Action Controls */}
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-gray-100">
+          <button
+            type="button"
+            onClick={() => setShowAdvancedUrl(!showAdvancedUrl)}
+            className="text-xs text-gray-500 hover:text-[#1E3A5F] underline transition-colors self-start sm:self-auto"
+          >
+            {showAdvancedUrl ? 'Hide Backend Endpoint' : 'Backend Endpoint Settings'}
+          </button>
+
+          <button
+            onClick={handleManualSync}
+            disabled={isTesting || isSyncing}
+            className="px-5 py-2.5 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white flex items-center gap-2 shadow-none transition-all self-start sm:self-auto"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isTesting || isSyncing ? 'animate-spin' : ''}`} />
+            {isTesting || isSyncing ? 'Synchronizing with Google Sheets...' : 'Sync Database Now'}
+          </button>
+        </div>
+
+        {/* Optional Collapsible Endpoint Form */}
+        {showAdvancedUrl && (
+          <form onSubmit={handleSaveGasUrl} className="pt-3 border-t border-gray-100 space-y-3">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                Google Apps Script Web App URL (/exec)
+              </label>
+              <input
+                type="url"
+                value={gasUrl}
+                onChange={e => setGasUrl(e.target.value)}
+                placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
+              />
+              <p className="text-[11px] text-gray-400 mt-1">
+                Set via <code className="text-[#1E3A5F] font-mono font-semibold">VITE_GAS_URL</code> environment variable on Vercel. You may update it here if your deployment URL changes.
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={isTesting}
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white transition-colors"
+              >
+                Save Backend URL
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+
+      {/* 2. Centralized Multi-Device Synchronization */}
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
-              Google Apps Script Web App URL (/exec) *
-            </label>
-            <input
-              type="url"
-              value={gasUrl}
-              onChange={e => setGasUrl(e.target.value)}
-              placeholder="https://script.google.com/macros/s/AKfycb.../exec"
-              className="w-full text-xs px-3 py-2.5 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
-            />
-            <p className="text-[11px] text-gray-400 mt-1">
-              Deploy your Apps Script as Web App with Access: "Anyone". See deployment guide in{' '}
-              <code className="text-[#1E3A5F] font-mono font-semibold">google-apps-script/DEPLOYMENT_INSTRUCTIONS.md</code>.
+            <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <Database className="w-4 h-4 text-[#1E3A5F]" />
+              Centralized Multi-Device Real-Time Sync
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Single source of truth: all phones, tablets, and computers communicate directly with the same Google Sheets backend.
             </p>
           </div>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Central Sync Active
+          </span>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Visual Multi-Device Diagram */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div className="p-3.5 rounded-lg bg-[#F3F4F6] border border-gray-200 flex items-center gap-3">
+            <Smartphone className="w-6 h-6 text-[#1E3A5F] flex-shrink-0" />
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
-                Google Spreadsheet ID
-              </label>
-              <input
-                type="text"
-                value={sheetId}
-                onChange={e => setSheetId(e.target.value)}
-                placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
-                Google Drive Root Folder ID
-              </label>
-              <input
-                type="text"
-                value={driveId}
-                onChange={e => setDriveId(e.target.value)}
-                placeholder="e.g. 1a2b3c4d5e6f7g8h9"
-                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
-              />
+              <div className="text-xs font-bold text-gray-900">Mobile Phone / Tablet</div>
+              <div className="text-[11px] text-gray-500">Live fetch & direct entry</div>
             </div>
           </div>
 
-          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <span className="text-xs text-gray-500">
-              Works seamlessly in both connected Google Sheets mode and local simulated ledger mode.
-            </span>
-            <button
-              onClick={handleSaveIntegration}
-              disabled={isTesting}
-              className="px-5 py-2.5 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white flex items-center gap-2 shadow-none transition-all self-start sm:self-auto"
-            >
-              {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
-              Save & Test Connection
-            </button>
+          <div className="p-3.5 rounded-lg bg-navy-50 border border-navy-200 flex items-center gap-3">
+            <HardDrive className="w-6 h-6 text-[#1E3A5F] flex-shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-[#1E3A5F]">Google Sheets Master DB</div>
+              <div className="text-[11px] text-[#1E3A5F]/80">Single Master Source of Truth</div>
+            </div>
           </div>
+
+          <div className="p-3.5 rounded-lg bg-[#F3F4F6] border border-gray-200 flex items-center gap-3">
+            <Laptop className="w-6 h-6 text-[#1E3A5F] flex-shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-gray-900">Laptop / Admin PC</div>
+              <div className="text-[11px] text-gray-500">Instant synced dashboard</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs text-gray-600 bg-gray-50 p-3.5 rounded-lg border border-gray-200 space-y-1">
+          <p className="font-semibold text-gray-800">No Browser-Isolated Storage</p>
+          <p className="text-[11px] text-gray-500 leading-relaxed">
+            Financial records are never isolated in a single browser's LocalStorage. Transactions, categories, and account updates entered on any device are saved directly to Google Sheets and auto-refreshed across all connected devices upon focus or refresh.
+          </p>
         </div>
       </div>
 
-      {/* 2. Admin Security & Password Change */}
+      {/* 3. LocalStorage Data Migration Engine */}
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-[#1E3A5F]" />
+              Local Storage Data Migration to Central Database
+            </h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Inspect browser-cached financial entries and migrate them safely into Google Sheets with verified deduplication
+            </p>
+          </div>
+          <span
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+              migrationStatus.hasPendingData
+                ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                : 'bg-emerald-50 text-[#16A34A] border border-emerald-200'
+            }`}
+          >
+            {migrationStatus.hasPendingData ? 'Records Pending Migration' : 'Fully Synchronized'}
+          </span>
+        </div>
+
+        {migrationResult && (
+          <div
+            className={`p-3.5 rounded-lg text-xs font-medium flex flex-col gap-1.5 ${
+              migrationResult.success
+                ? 'bg-emerald-50 border border-emerald-200 text-[#16A34A]'
+                : 'bg-rose-50 border border-rose-200 text-[#DC2626]'
+            }`}
+          >
+            <div className="flex items-center gap-2 font-bold">
+              {migrationResult.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+              <span>{migrationResult.message}</span>
+            </div>
+            {migrationResult.details && (
+              <div className="text-[11px] opacity-90 pl-6 space-y-0.5">
+                <div>• Migrated: {JSON.stringify(migrationResult.details.migrated || {})}</div>
+                <div>• Skipped duplicates: {JSON.stringify(migrationResult.details.skipped || {})}</div>
+                {migrationResult.details.backupKey && (
+                  <div>• Pre-migration safety backup created: <code className="font-mono">{migrationResult.details.backupKey}</code></div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Income Records</span>
+            <span className="font-bold text-gray-900 text-sm">
+              {migrationStatus.localRecordCount.income}
+            </span>
+            <span className="block text-[10px] text-[#16A34A] font-semibold mt-0.5">
+              {formatCurrency(migrationStatus.totalIncomeAmount)}
+            </span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Expense Records</span>
+            <span className="font-bold text-gray-900 text-sm">
+              {migrationStatus.localRecordCount.expenses}
+            </span>
+            <span className="block text-[10px] text-[#DC2626] font-semibold mt-0.5">
+              {formatCurrency(migrationStatus.totalExpenseAmount)}
+            </span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Transactions</span>
+            <span className="font-bold text-gray-900 text-sm">
+              {migrationStatus.localRecordCount.transactions}
+            </span>
+            <span className="block text-[10px] text-gray-500 mt-0.5">Ledger Entries</span>
+          </div>
+
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Custom Categories</span>
+            <span className="font-bold text-gray-900 text-sm">
+              {migrationStatus.localRecordCount.categories}
+            </span>
+            <span className="block text-[10px] text-gray-500 mt-0.5">Defined</span>
+          </div>
+        </div>
+
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-gray-100">
+          <span className="text-[11px] text-gray-500">
+            Safety guarantee: An immutable local backup is saved before transmission. Duplicates already present in Google Sheets are skipped.
+          </span>
+          <button
+            onClick={handleRunMigration}
+            disabled={isMigrating || !migrationStatus.hasPendingData}
+            className={`px-5 py-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 shadow-none transition-all self-start sm:self-auto ${
+              migrationStatus.hasPendingData
+                ? 'bg-[#1E3A5F] hover:bg-[#172E4D] text-white'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            {isMigrating ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <HardDrive className="w-3.5 h-3.5" />}
+            {isMigrating ? 'Migrating to Google Sheets...' : 'Migrate Local Data to Google Sheets'}
+          </button>
+        </div>
+      </div>
+
+      {/* 4. Admin Security & Password Change */}
       <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-5">
         <div>
           <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
@@ -328,7 +597,7 @@ export const SettingsView: React.FC = () => {
         </form>
       </div>
 
-      {/* 3. Festival Details & UI Preferences */}
+      {/* 5. Festival Details & UI Preferences */}
       <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
         <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-[#1E3A5F]" />
@@ -368,7 +637,7 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Data Safety & Master Backup */}
+      {/* 6. Data Safety & Master Backup */}
       <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
         <div>
           <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">

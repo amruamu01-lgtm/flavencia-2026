@@ -34,9 +34,23 @@ import {
 } from '../utils/idGenerator';
 import { sha256 } from './auth';
 
-const STORAGE_KEY_GAS_URL = 'flavencia_gas_url';
-const STORAGE_KEY_SHEET_ID = 'flavencia_sheet_id';
-const STORAGE_KEY_DRIVE_ID = 'flavencia_drive_id';
+import {
+  getCentralGasUrl,
+  setCentralGasUrl,
+  getCentralSpreadsheetId,
+  setCentralSpreadsheetId,
+  getCentralDriveFolderId,
+  setCentralDriveFolderId,
+  STORAGE_KEY_GAS_URL
+} from '../config/backendConfig';
+
+export const getGasBackendUrl = getCentralGasUrl;
+export const setGasBackendUrl = setCentralGasUrl;
+export const getSpreadsheetId = getCentralSpreadsheetId;
+export const setSpreadsheetId = setCentralSpreadsheetId;
+export const getDriveFolderId = getCentralDriveFolderId;
+export const setDriveFolderId = setCentralDriveFolderId;
+
 const STORAGE_KEY_LOCAL_DB = 'flavencia_local_sheets_db_cache';
 
 export interface DatabaseState {
@@ -52,32 +66,8 @@ export interface DatabaseState {
   auditLogs: AuditLogRecord[];
   isOnline: boolean;
   backendUrl: string;
-  spreadsheetId: string;
-  driveFolderId: string;
-}
-
-export function getGasBackendUrl(): string {
-  return localStorage.getItem(STORAGE_KEY_GAS_URL) || '';
-}
-
-export function setGasBackendUrl(url: string): void {
-  localStorage.setItem(STORAGE_KEY_GAS_URL, url.trim());
-}
-
-export function getSpreadsheetId(): string {
-  return localStorage.getItem(STORAGE_KEY_SHEET_ID) || '';
-}
-
-export function setSpreadsheetId(id: string): void {
-  localStorage.setItem(STORAGE_KEY_SHEET_ID, id.trim());
-}
-
-export function getDriveFolderId(): string {
-  return localStorage.getItem(STORAGE_KEY_DRIVE_ID) || '';
-}
-
-export function setDriveFolderId(id: string): void {
-  localStorage.setItem(STORAGE_KEY_DRIVE_ID, id.trim());
+  spreadsheetId?: string;
+  driveFolderId?: string;
 }
 
 // Initial In-Memory / Local Cache Database matching Google Sheets Structure
@@ -153,55 +143,77 @@ export function saveLocalDb(db: DatabaseState): void {
 
 /**
  * Universal API request wrapper
- * Calls Google Apps Script Web App when URL is configured,
- * or handles in simulated mode with strict validation if not yet configured.
+ * Directly communicates with centralized Google Apps Script Web App.
+ * Does NOT silently fall back to LocalStorage in production.
+ * Includes automatic retry for network hiccups.
  */
-export async function callBackendApi<T = any>(action: string, payload: any = {}): Promise<ApiResponse<T>> {
+export async function callBackendApi<T = any>(
+  action: string,
+  payload: any = {},
+  retriesLeft = 1
+): Promise<ApiResponse<T>> {
   const backendUrl = getGasBackendUrl();
-  
+
   if (backendUrl && backendUrl.startsWith('http')) {
     try {
-      // POST request to Google Apps Script Web App
-      // Apps Script web apps receive JSON payloads via e.postData.contents or query parameters
       const response = await fetch(backendUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'text/plain;charset=utf-8', // Prevents CORS preflight issues with Google Apps Script
+          'Content-Type': 'text/plain;charset=utf-8',
         },
-        body: JSON.stringify({ action, payload, timestamp: new Date().toISOString() })
+        body: JSON.stringify({ action, payload, timestamp: new Date().toISOString() }),
+        redirect: 'follow'
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+        throw new Error(`Google Apps Script HTTP ${response.status}: ${response.statusText}`);
       }
 
       const resJson: ApiResponse<T> = await response.json();
       return resJson;
     } catch (err: any) {
-      console.warn(`GAS Backend request (${action}) failed, falling back to local database engine:`, err.message);
-      // Fallback to local engine below
+      if (retriesLeft > 0) {
+        // Wait 1 second and retry once
+        await new Promise(res => setTimeout(res, 1000));
+        return callBackendApi<T>(action, payload, retriesLeft - 1);
+      }
+      return {
+        success: false,
+        error: `Google Sheets Connection Error: ${err.message || 'Server unreachable'}. Verify your internet connection and Apps Script deployment.`
+      };
     }
   }
 
-  // --- Local / Offline Financial Engine (Simulates Apps Script Backend strictly) ---
-  return executeLocalAction<T>(action, payload);
+  // Explicit testing / Node environment fallback
+  if (typeof window === 'undefined' || (typeof window !== 'undefined' && (window as any).__ALLOW_MOCK_ENGINE__)) {
+    return executeLocalAction<T>(action, payload);
+  }
+
+  return {
+    success: false,
+    error: 'Google Sheets backend URL is not configured. Please enter your Web App URL in Settings to enable multi-device sync.'
+  };
 }
 
 /**
- * Local simulation of Apps Script backend logic.
- * Exactly implements the same calculation, LockService simulation,
- * transaction creation, and audit logging required for Google Sheets.
+ * Local simulation of Apps Script backend logic for testing and simulation.
  */
-function executeLocalAction<T>(action: string, payload: any): ApiResponse<T> {
+export function executeLocalAction<T>(action: string, payload: any): ApiResponse<T> {
   const db = loadLocalDb();
   const now = new Date().toISOString();
 
   switch (action) {
-    case 'ping': {
+    case 'ping':
+    case 'getDatabaseStatus': {
       return {
         success: true,
-        message: 'Local Engine Active',
-        data: { status: 'ONLINE_LOCAL', timestamp: now } as any
+        message: 'Central Database Engine Active',
+        data: {
+          connected: true,
+          spreadsheetName: 'FLAVENCIA 2026 Master Database',
+          sheetsCount: 10,
+          timestamp: now
+        } as any
       };
     }
 
@@ -740,6 +752,109 @@ function executeLocalAction<T>(action: string, payload: any): ApiResponse<T> {
       });
       saveLocalDb(db);
       return { success: true, message: 'Account created', data: newAcc as any };
+    }
+
+    case 'updateCategory': {
+      const { categoryId, categoryName, categoryType, description, isActive, performedBy = 'Admin' } = payload;
+      if (!categoryId) return { success: false, error: 'Category ID is required' };
+      const cat = db.categories.find(c => c.categoryId === categoryId);
+      if (!cat) return { success: false, error: 'Category not found' };
+      const oldVal = JSON.stringify(cat);
+      if (categoryName !== undefined) cat.categoryName = categoryName;
+      if (categoryType !== undefined) cat.categoryType = categoryType;
+      if (description !== undefined) cat.description = description;
+      if (isActive !== undefined) cat.isActive = isActive;
+
+      db.auditLogs.unshift({
+        logId: generateLogId(),
+        actionType: 'UPDATE_CATEGORY',
+        module: 'CATEGORIES',
+        recordId: categoryId,
+        oldValue: oldVal,
+        newValue: JSON.stringify(cat),
+        performedBy,
+        timestamp: now
+      });
+      saveLocalDb(db);
+      return { success: true, message: 'Category updated', data: cat as any };
+    }
+
+    case 'deleteCategory': {
+      const { categoryId, performedBy = 'Admin' } = payload;
+      if (!categoryId) return { success: false, error: 'Category ID is required' };
+      const idx = db.categories.findIndex(c => c.categoryId === categoryId);
+      if (idx === -1) return { success: false, error: 'Category not found' };
+      
+      const isUsed = db.income.some(i => i.categoryId === categoryId) || db.expenses.some(e => e.categoryId === categoryId);
+      if (isUsed) {
+        db.categories[idx].isActive = false;
+        db.auditLogs.unshift({
+          logId: generateLogId(),
+          actionType: 'DEACTIVATE_CATEGORY',
+          module: 'CATEGORIES',
+          recordId: categoryId,
+          oldValue: 'Active',
+          newValue: 'Inactive',
+          performedBy,
+          timestamp: now
+        });
+        saveLocalDb(db);
+        return { success: true, message: 'Category is in use; marked as inactive.' };
+      } else {
+        const oldCat = db.categories.splice(idx, 1)[0];
+        db.auditLogs.unshift({
+          logId: generateLogId(),
+          actionType: 'DELETE_CATEGORY',
+          module: 'CATEGORIES',
+          recordId: categoryId,
+          oldValue: JSON.stringify(oldCat),
+          newValue: 'Deleted',
+          performedBy,
+          timestamp: now
+        });
+        saveLocalDb(db);
+        return { success: true, message: 'Category deleted successfully' };
+      }
+    }
+
+    case 'migrateData': {
+      const { income = [], expenses = [], expensePayments = [], transactions = [], categories = [], budgets = [] } = payload;
+      const existingInc = new Set(db.income.map(i => i.incomeId));
+      const existingExp = new Set(db.expenses.map(e => e.expenseId));
+      const existingPay = new Set(db.expensePayments.map(p => p.paymentId));
+      const existingTxn = new Set(db.transactions.map(t => t.transactionId));
+      const existingCat = new Set(db.categories.map(c => c.categoryId));
+      const existingBdg = new Set(db.budgets.map(b => b.budgetId));
+
+      let mInc = 0, mExp = 0, mPay = 0, mTxn = 0, mCat = 0, mBdg = 0;
+
+      categories.forEach((c: CategoryRecord) => {
+        if (!existingCat.has(c.categoryId)) { db.categories.push(c); existingCat.add(c.categoryId); mCat++; }
+      });
+      income.forEach((i: IncomeRecord) => {
+        if (!existingInc.has(i.incomeId)) { db.income.unshift(i); existingInc.add(i.incomeId); mInc++; }
+      });
+      expenses.forEach((e: ExpenseRecord) => {
+        if (!existingExp.has(e.expenseId)) { db.expenses.unshift(e); existingExp.add(e.expenseId); mExp++; }
+      });
+      expensePayments.forEach((p: ExpensePaymentRecord) => {
+        if (!existingPay.has(p.paymentId)) { db.expensePayments.unshift(p); existingPay.add(p.paymentId); mPay++; }
+      });
+      transactions.forEach((t: TransactionRecord) => {
+        if (!existingTxn.has(t.transactionId)) { db.transactions.unshift(t); existingTxn.add(t.transactionId); mTxn++; }
+      });
+      budgets.forEach((b: BudgetRecord) => {
+        if (!existingBdg.has(b.budgetId)) { db.budgets.unshift(b); existingBdg.add(b.budgetId); mBdg++; }
+      });
+
+      saveLocalDb(db);
+      return {
+        success: true,
+        message: 'Migrated successfully',
+        summary: {
+          migrated: { income: mInc, expenses: mExp, payments: mPay, transactions: mTxn, categories: mCat, budgets: mBdg }
+        }
+      } as any;
     }
 
     case 'changeAdminPassword': {

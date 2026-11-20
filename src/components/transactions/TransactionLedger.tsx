@@ -151,13 +151,11 @@ export const TransactionLedger: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-3 px-4">Txn ID</th>
                   <th className="py-3 px-4">Date</th>
                   <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4">Ref ID</th>
                   <th className="py-3 px-4">Description</th>
                   <th className="py-3 px-4">Account</th>
-                  <th className="py-3 px-4">Method</th>
                   <th className="py-3 px-4 text-right">Credit (₹)</th>
                   <th className="py-3 px-4 text-right">Debit (₹)</th>
                   <th className="py-3 px-4 text-right">Running Bal</th>
@@ -166,36 +164,30 @@ export const TransactionLedger: React.FC = () => {
               <tbody className="divide-y divide-gray-100 font-medium text-[#374151]">
                 {paginatedTxns.map(t => (
                   <tr key={t.transactionId} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-3 px-4 font-mono text-[11px] text-gray-500">
-                      {t.transactionId}
-                    </td>
-                    <td className="py-3 px-4 text-gray-700">
+                    <td className="py-3 px-4 text-gray-700 whitespace-nowrap">
                       {formatDate(t.transactionDate)}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 whitespace-nowrap">
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-700 font-mono">
                         {t.transactionType}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-mono text-[11px] text-[#1E3A5F] font-semibold">
+                    <td className="py-3 px-4 font-mono text-[11px] text-[#1E3A5F] font-semibold whitespace-nowrap">
                       {t.referenceId || '-'}
                     </td>
                     <td className="py-3 px-4 max-w-xs truncate text-gray-900" title={t.description}>
                       {t.description}
                     </td>
-                    <td className="py-3 px-4 text-gray-700 font-semibold">
+                    <td className="py-3 px-4 text-gray-700 font-semibold whitespace-nowrap">
                       {t.accountName || t.accountId}
                     </td>
-                    <td className="py-3 px-4 text-gray-500">
-                      {t.paymentMethod}
-                    </td>
-                    <td className="py-3 px-4 text-right font-bold text-[#16A34A]">
+                    <td className="py-3 px-4 text-right font-bold text-[#16A34A] whitespace-nowrap">
                       {t.direction === 'CREDIT' ? `+${formatCurrency(t.amount)}` : '-'}
                     </td>
-                    <td className="py-3 px-4 text-right font-bold text-[#DC2626]">
+                    <td className="py-3 px-4 text-right font-bold text-[#DC2626] whitespace-nowrap">
                       {t.direction === 'DEBIT' ? `-${formatCurrency(t.amount)}` : '-'}
                     </td>
-                    <td className="py-3 px-4 text-right font-bold font-mono text-gray-900">
+                    <td className="py-3 px-4 text-right font-bold font-mono text-gray-900 whitespace-nowrap">
                       {t.runningBalance !== undefined ? formatCurrency(t.runningBalance) : '-'}
                     </td>
                   </tr>

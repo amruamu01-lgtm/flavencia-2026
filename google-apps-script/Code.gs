@@ -25,31 +25,94 @@
  * - NO approval logic
  */
 
-// Configuration Constants
-const SPREADSHEET_ID = ''; // Leave blank to bind to active spreadsheet or paste explicit ID
+// ============================================================================
+// CENTRAL GOOGLE SHEETS DATABASE CONFIGURATION (SERVER-SIDE)
+// ============================================================================
+// The Master Google Spreadsheet ID is configured centrally on the server.
+// No client or admin needs to manually configure or enter a Spreadsheet ID.
+//
+// Discovery priority:
+// 1. Script Properties (Server-side environment variable): SPREADSHEET_ID
+// 2. Constant SPREADSHEET_ID below (if set)
+// 3. Active container-bound spreadsheet (Extensions > Apps Script from within Sheet)
+const SPREADSHEET_ID = ''; // Leave blank if script is container-bound or set in Script Properties
 
+/**
+ * Centrally retrieves the connected Master Google Spreadsheet.
+ */
 function getSpreadsheet() {
-  if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
-    return SpreadsheetApp.openById(SPREADSHEET_ID);
+  // 1. Check server-side Script Properties (environment variable)
+  try {
+    const props = PropertiesService.getScriptProperties();
+    const propId = props.getProperty('SPREADSHEET_ID');
+    if (propId && propId.trim() !== '') {
+      return SpreadsheetApp.openById(propId.trim());
+    }
+  } catch (err) {
+    Logger.log('Notice: Could not read script properties: ' + err.message);
   }
-  return SpreadsheetApp.getActiveSpreadsheet();
+
+  // 2. Check server-side constant
+  if (typeof SPREADSHEET_ID !== 'undefined' && SPREADSHEET_ID && SPREADSHEET_ID.trim() !== '') {
+    return SpreadsheetApp.openById(SPREADSHEET_ID.trim());
+  }
+
+  // 3. Check container-bound active spreadsheet
+  try {
+    const active = SpreadsheetApp.getActiveSpreadsheet();
+    if (active) {
+      return active;
+    }
+  } catch (err) {
+    Logger.log('Notice: No container-bound spreadsheet active: ' + err.message);
+  }
+
+  throw new Error('Central Google Spreadsheet is not connected. Configure SPREADSHEET_ID in Script Properties or bind this script to the Master Spreadsheet.');
 }
 
 /**
- * Handle GET requests (Health check, simple data fetch)
+ * Server-side helper to configure or update the central Spreadsheet ID.
+ * Can be executed once from the Apps Script editor without redeploying code.
+ */
+function setCentralSpreadsheetId(id) {
+  if (!id || id.trim() === '') {
+    throw new Error('Spreadsheet ID cannot be empty');
+  }
+  PropertiesService.getScriptProperties().setProperty('SPREADSHEET_ID', id.trim());
+  Logger.log('Central Master Spreadsheet ID set to: ' + id.trim());
+  return 'Success: Central Spreadsheet ID configured.';
+}
+
+/**
+ * Handle GET requests (Health check, central database status, simple data fetch)
  */
 function doGet(e) {
   try {
     const action = e && e.parameter && e.parameter.action ? e.parameter.action : 'ping';
-    if (action === 'ping') {
+    if (action === 'ping' || action === 'getDatabaseStatus') {
+      let dbInfo = { connected: false };
+      try {
+        const ss = getSpreadsheet();
+        dbInfo = {
+          connected: true,
+          spreadsheetName: ss.getName(),
+          sheetsCount: ss.getSheets().length,
+          timezone: ss.getSpreadsheetTimeZone()
+        };
+      } catch (e) {
+        dbInfo = { connected: false, error: e.message };
+      }
       return jsonResponse({
-        success: true,
-        message: 'FLAVENCIA 2026 Apps Script Backend is Live',
+        success: dbInfo.connected,
+        connected: dbInfo.connected,
+        message: dbInfo.connected ? 'FLAVENCIA 2026 Central Database Backend is Connected' : dbInfo.error,
+        database: dbInfo,
         timestamp: new Date().toISOString()
       });
     }
     if (action === 'getAllData') {
-      const data = fetchAllDatabaseData();
+      const ss = getSpreadsheet();
+      const data = fetchAllDatabaseData(ss);
       return jsonResponse({ success: true, data: data });
     }
     return jsonResponse({ success: false, error: 'Unknown GET action: ' + action });
@@ -89,7 +152,26 @@ function doPost(e) {
     // Route Actions
     switch (action) {
       case 'ping':
-        return jsonResponse({ success: true, message: 'Pong from Apps Script' });
+      case 'getDatabaseStatus': {
+        let dbInfo = { connected: false };
+        try {
+          dbInfo = {
+            connected: true,
+            spreadsheetName: ss.getName(),
+            sheetsCount: ss.getSheets().length,
+            timezone: ss.getSpreadsheetTimeZone()
+          };
+        } catch (e) {
+          dbInfo = { connected: false, error: e.message };
+        }
+        return jsonResponse({
+          success: dbInfo.connected,
+          connected: dbInfo.connected,
+          message: dbInfo.connected ? 'FLAVENCIA 2026 Central Database Backend is Connected' : dbInfo.error,
+          database: dbInfo,
+          timestamp: new Date().toISOString()
+        });
+      }
 
       case 'initDatabase':
         return jsonResponse(initDatabaseStructure(ss));
@@ -100,8 +182,20 @@ function doPost(e) {
       case 'addIncome':
         return jsonResponse(handleAddIncome(ss, payload));
 
+      case 'editIncome':
+        return jsonResponse(handleEditIncome(ss, payload));
+
+      case 'deleteIncome':
+        return jsonResponse(handleDeleteIncome(ss, payload));
+
       case 'addExpense':
         return jsonResponse(handleAddExpense(ss, payload));
+
+      case 'editExpense':
+        return jsonResponse(handleEditExpense(ss, payload));
+
+      case 'deleteExpense':
+        return jsonResponse(handleDeleteExpense(ss, payload));
 
       case 'recordPayment':
         return jsonResponse(handleRecordPayment(ss, payload));
@@ -118,8 +212,17 @@ function doPost(e) {
       case 'addCategory':
         return jsonResponse(handleAddCategory(ss, payload));
 
+      case 'updateCategory':
+        return jsonResponse(handleUpdateCategory(ss, payload));
+
+      case 'deleteCategory':
+        return jsonResponse(handleDeleteCategory(ss, payload));
+
       case 'addAccount':
         return jsonResponse(handleAddAccount(ss, payload));
+
+      case 'migrateData':
+        return jsonResponse(handleMigrateData(ss, payload));
 
       case 'uploadFile':
         return jsonResponse(handleUploadFile(payload));
@@ -639,11 +742,337 @@ function handleDeleteBudget(ss, p) {
 function handleAddCategory(ss, p) {
   if (!p.categoryName) return { success: false, error: 'Category name required' };
   const catSheet = ss.getSheetByName('Categories');
-  const catId = 'CAT-' + Date.now().toString().slice(-4);
+  const catId = p.categoryId || ('CAT-' + Date.now().toString().slice(-4));
   const now = new Date().toISOString();
   catSheet.appendRow([catId, p.categoryName, p.categoryType || 'EXPENSE', p.description || '', true, now]);
   logAudit(ss, 'CREATE_CATEGORY', 'CATEGORIES', catId, '', p.categoryName, p.performedBy || 'Admin', now);
   return { success: true, message: 'Category added', categoryId: catId };
+}
+
+function handleUpdateCategory(ss, p) {
+  if (!p.categoryId) return { success: false, error: 'Category ID is required' };
+  const catSheet = ss.getSheetByName('Categories');
+  const values = catSheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(p.categoryId)) {
+      if (p.categoryName !== undefined) catSheet.getRange(i + 1, 2).setValue(p.categoryName);
+      if (p.categoryType !== undefined) catSheet.getRange(i + 1, 3).setValue(p.categoryType);
+      if (p.description !== undefined) catSheet.getRange(i + 1, 4).setValue(p.description);
+      if (p.isActive !== undefined) catSheet.getRange(i + 1, 5).setValue(p.isActive);
+      logAudit(ss, 'UPDATE_CATEGORY', 'CATEGORIES', p.categoryId, String(values[i][1]), JSON.stringify(p), p.performedBy || 'Admin', new Date().toISOString());
+      return { success: true, message: 'Category updated successfully' };
+    }
+  }
+  return { success: false, error: 'Category not found' };
+}
+
+function handleDeleteCategory(ss, p) {
+  if (!p.categoryId) return { success: false, error: 'Category ID is required' };
+  const catSheet = ss.getSheetByName('Categories');
+  const values = catSheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(p.categoryId)) {
+      // Check if category is used in Income or Expenses
+      const incSheet = ss.getSheetByName('Income');
+      const expSheet = ss.getSheetByName('Expenses');
+      let isUsed = false;
+      if (incSheet) {
+        const incVals = incSheet.getDataRange().getValues();
+        for (let j = 1; j < incVals.length; j++) {
+          if (String(incVals[j][2]) === String(p.categoryId)) { isUsed = true; break; }
+        }
+      }
+      if (!isUsed && expSheet) {
+        const expVals = expSheet.getDataRange().getValues();
+        for (let k = 1; k < expVals.length; k++) {
+          if (String(expVals[k][2]) === String(p.categoryId)) { isUsed = true; break; }
+        }
+      }
+      
+      if (isUsed) {
+        catSheet.getRange(i + 1, 5).setValue(false);
+        logAudit(ss, 'DEACTIVATE_CATEGORY', 'CATEGORIES', p.categoryId, 'Active', 'Inactive (in use)', p.performedBy || 'Admin', new Date().toISOString());
+        return { success: true, message: 'Category is linked to existing transactions; it has been deactivated from future entries.' };
+      } else {
+        catSheet.deleteRow(i + 1);
+        logAudit(ss, 'DELETE_CATEGORY', 'CATEGORIES', p.categoryId, String(values[i][1]), 'Deleted', p.performedBy || 'Admin', new Date().toISOString());
+        return { success: true, message: 'Category deleted successfully' };
+      }
+    }
+  }
+  return { success: false, error: 'Category not found' };
+}
+
+function handleEditIncome(ss, p) {
+  if (!p.incomeId) return { success: false, error: 'Income ID is required' };
+  const incSheet = ss.getSheetByName('Income');
+  const values = incSheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(p.incomeId)) {
+      const oldAmount = Number(values[i][5]);
+      const newAmount = p.amount !== undefined ? Number(p.amount) : oldAmount;
+      if (p.date) incSheet.getRange(i + 1, 2).setValue(p.date);
+      if (p.categoryId) incSheet.getRange(i + 1, 3).setValue(p.categoryId);
+      if (p.sourceName) incSheet.getRange(i + 1, 4).setValue(p.sourceName);
+      if (p.description !== undefined) incSheet.getRange(i + 1, 5).setValue(p.description);
+      if (p.amount !== undefined) incSheet.getRange(i + 1, 6).setValue(newAmount);
+      if (p.paymentMethod) incSheet.getRange(i + 1, 7).setValue(p.paymentMethod);
+      if (p.accountId) incSheet.getRange(i + 1, 8).setValue(p.accountId);
+      if (p.receivedBy) incSheet.getRange(i + 1, 9).setValue(p.receivedBy);
+      if (p.referenceNumber !== undefined) incSheet.getRange(i + 1, 10).setValue(p.referenceNumber);
+      if (p.receiptUrl !== undefined) incSheet.getRange(i + 1, 11).setValue(p.receiptUrl);
+      if (p.remarks !== undefined) incSheet.getRange(i + 1, 12).setValue(p.remarks);
+      incSheet.getRange(i + 1, 14).setValue(new Date().toISOString());
+
+      // Update associated transaction
+      const txnSheet = ss.getSheetByName('Transactions');
+      if (txnSheet) {
+        const txnVals = txnSheet.getDataRange().getValues();
+        for (let t = 1; t < txnVals.length; t++) {
+          if (String(txnVals[t][3]) === String(p.incomeId) && txnVals[t][2] === 'INCOME') {
+            if (p.date) txnSheet.getRange(t + 1, 2).setValue(p.date);
+            if (p.accountId) txnSheet.getRange(t + 1, 5).setValue(p.accountId);
+            if (p.amount !== undefined) txnSheet.getRange(t + 1, 6).setValue(newAmount);
+            if (p.sourceName || p.description) txnSheet.getRange(t + 1, 8).setValue('Income: ' + (p.sourceName || values[i][3]) + ' - ' + (p.description || values[i][4]));
+            if (p.paymentMethod) txnSheet.getRange(t + 1, 9).setValue(p.paymentMethod);
+            break;
+          }
+        }
+      }
+
+      logAudit(ss, 'EDIT_INCOME', 'INCOME', p.incomeId, 'Amount: ' + oldAmount, 'Amount: ' + newAmount, p.performedBy || 'Admin', new Date().toISOString());
+      return { success: true, message: 'Income record updated successfully' };
+    }
+  }
+  return { success: false, error: 'Income record not found' };
+}
+
+function handleDeleteIncome(ss, p) {
+  if (!p.incomeId) return { success: false, error: 'Income ID is required' };
+  const incSheet = ss.getSheetByName('Income');
+  const values = incSheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(p.incomeId)) {
+      const oldAmount = values[i][5];
+      incSheet.deleteRow(i + 1);
+
+      // Delete corresponding transaction
+      const txnSheet = ss.getSheetByName('Transactions');
+      if (txnSheet) {
+        const txnVals = txnSheet.getDataRange().getValues();
+        for (let t = txnVals.length - 1; t >= 1; t--) {
+          if (String(txnVals[t][3]) === String(p.incomeId)) {
+            txnSheet.deleteRow(t + 1);
+          }
+        }
+      }
+
+      logAudit(ss, 'DELETE_INCOME', 'INCOME', p.incomeId, 'Amount: ' + oldAmount, 'Deleted', p.performedBy || 'Admin', new Date().toISOString());
+      return { success: true, message: 'Income record and associated transaction deleted' };
+    }
+  }
+  return { success: false, error: 'Income record not found' };
+}
+
+function handleEditExpense(ss, p) {
+  if (!p.expenseId) return { success: false, error: 'Expense ID is required' };
+  const expSheet = ss.getSheetByName('Expenses');
+  const values = expSheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(p.expenseId)) {
+      const oldTotal = Number(values[i][6]);
+      const paidAmount = Number(values[i][7]);
+      const newTotal = p.totalAmount !== undefined ? Number(p.totalAmount) : oldTotal;
+
+      if (newTotal < paidAmount) {
+        return { success: false, error: 'Total amount cannot be less than already paid amount (' + paidAmount + ')' };
+      }
+
+      const newBalance = newTotal - paidAmount;
+      let newStatus = 'UNPAID';
+      if (paidAmount >= newTotal && newTotal > 0) newStatus = 'PAID';
+      else if (paidAmount > 0) newStatus = 'PARTIALLY PAID';
+
+      if (p.date) expSheet.getRange(i + 1, 2).setValue(p.date);
+      if (p.categoryId) expSheet.getRange(i + 1, 3).setValue(p.categoryId);
+      if (p.itemName) expSheet.getRange(i + 1, 4).setValue(p.itemName);
+      if (p.description !== undefined) expSheet.getRange(i + 1, 5).setValue(p.description);
+      if (p.vendorName) expSheet.getRange(i + 1, 6).setValue(p.vendorName);
+      if (p.totalAmount !== undefined) expSheet.getRange(i + 1, 7).setValue(newTotal);
+      expSheet.getRange(i + 1, 9).setValue(newBalance);
+      expSheet.getRange(i + 1, 14).setValue(newStatus);
+      if (p.remarks !== undefined) expSheet.getRange(i + 1, 15).setValue(p.remarks);
+      expSheet.getRange(i + 1, 17).setValue(new Date().toISOString());
+
+      logAudit(ss, 'EDIT_EXPENSE', 'EXPENSES', p.expenseId, 'Total: ' + oldTotal, 'Total: ' + newTotal, p.performedBy || 'Admin', new Date().toISOString());
+      return { success: true, message: 'Expense record updated' };
+    }
+  }
+  return { success: false, error: 'Expense record not found' };
+}
+
+function handleDeleteExpense(ss, p) {
+  if (!p.expenseId) return { success: false, error: 'Expense ID is required' };
+  const expSheet = ss.getSheetByName('Expenses');
+  const values = expSheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]) === String(p.expenseId)) {
+      expSheet.deleteRow(i + 1);
+
+      // Delete payments
+      const paySheet = ss.getSheetByName('ExpensePayments');
+      if (paySheet) {
+        const payVals = paySheet.getDataRange().getValues();
+        for (let py = payVals.length - 1; py >= 1; py--) {
+          if (String(payVals[py][1]) === String(p.expenseId)) {
+            paySheet.deleteRow(py + 1);
+          }
+        }
+      }
+
+      // Delete transactions
+      const txnSheet = ss.getSheetByName('Transactions');
+      if (txnSheet) {
+        const txnVals = txnSheet.getDataRange().getValues();
+        for (let t = txnVals.length - 1; t >= 1; t--) {
+          if (String(txnVals[t][3]) === String(p.expenseId)) {
+            txnSheet.deleteRow(t + 1);
+          }
+        }
+      }
+
+      logAudit(ss, 'DELETE_EXPENSE', 'EXPENSES', p.expenseId, '', 'Deleted with payments & txns', p.performedBy || 'Admin', new Date().toISOString());
+      return { success: true, message: 'Expense and related payment records deleted' };
+    }
+  }
+  return { success: false, error: 'Expense record not found' };
+}
+
+function handleMigrateData(ss, p) {
+  const result = {
+    migrated: { income: 0, expenses: 0, payments: 0, transactions: 0, categories: 0, accounts: 0, transfers: 0, budgets: 0 },
+    skipped: { income: 0, expenses: 0, payments: 0, transactions: 0, categories: 0, accounts: 0, transfers: 0, budgets: 0 }
+  };
+
+  function getExistingIds(sheetName, idColIdx) {
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) return new Set();
+    const vals = sheet.getDataRange().getValues();
+    const set = new Set();
+    for (let i = 1; i < vals.length; i++) {
+      if (vals[i][idColIdx]) set.add(String(vals[i][idColIdx]));
+    }
+    return set;
+  }
+
+  // Categories
+  if (Array.isArray(p.categories) && p.categories.length > 0) {
+    const catSheet = ss.getSheetByName('Categories');
+    const existing = getExistingIds('Categories', 0);
+    p.categories.forEach(function(c) {
+      if (!existing.has(String(c.categoryId))) {
+        catSheet.appendRow([c.categoryId, c.categoryName, c.categoryType, c.description || '', c.isActive !== false, c.createdAt || new Date().toISOString()]);
+        existing.add(String(c.categoryId));
+        result.migrated.categories++;
+      } else {
+        result.skipped.categories++;
+      }
+    });
+  }
+
+  // Income
+  if (Array.isArray(p.income) && p.income.length > 0) {
+    const incSheet = ss.getSheetByName('Income');
+    const existing = getExistingIds('Income', 0);
+    p.income.forEach(function(item) {
+      if (!existing.has(String(item.incomeId))) {
+        incSheet.appendRow([
+          item.incomeId, item.date, item.categoryId, item.sourceName, item.description || '',
+          Number(item.amount) || 0, item.paymentMethod || 'CASH', item.accountId, item.receivedBy || 'Admin',
+          item.referenceNumber || '', item.receiptUrl || '', item.remarks || '', item.createdAt || new Date().toISOString(), item.updatedAt || new Date().toISOString()
+        ]);
+        existing.add(String(item.incomeId));
+        result.migrated.income++;
+      } else {
+        result.skipped.income++;
+      }
+    });
+  }
+
+  // Expenses
+  if (Array.isArray(p.expenses) && p.expenses.length > 0) {
+    const expSheet = ss.getSheetByName('Expenses');
+    const existing = getExistingIds('Expenses', 0);
+    p.expenses.forEach(function(item) {
+      if (!existing.has(String(item.expenseId))) {
+        expSheet.appendRow([
+          item.expenseId, item.date, item.categoryId, item.itemName, item.description || '', item.vendorName || '',
+          Number(item.totalAmount) || 0, Number(item.paidAmount) || 0, Number(item.balanceAmount) || 0,
+          item.paymentMethod || 'CASH', item.accountId || '', item.paidBy || 'Admin', item.billUrl || '',
+          item.paymentStatus || 'UNPAID', item.remarks || '', item.createdAt || new Date().toISOString(), item.updatedAt || new Date().toISOString()
+        ]);
+        existing.add(String(item.expenseId));
+        result.migrated.expenses++;
+      } else {
+        result.skipped.expenses++;
+      }
+    });
+  }
+
+  // ExpensePayments
+  if (Array.isArray(p.expensePayments) && p.expensePayments.length > 0) {
+    const paySheet = ss.getSheetByName('ExpensePayments');
+    const existing = getExistingIds('ExpensePayments', 0);
+    p.expensePayments.forEach(function(item) {
+      if (!existing.has(String(item.paymentId))) {
+        paySheet.appendRow([
+          item.paymentId, item.expenseId, item.paymentDate, Number(item.amount) || 0,
+          item.paymentMethod || 'CASH', item.accountId, item.referenceNumber || '', item.remarks || '', item.createdAt || new Date().toISOString()
+        ]);
+        existing.add(String(item.paymentId));
+        result.migrated.payments++;
+      } else {
+        result.skipped.payments++;
+      }
+    });
+  }
+
+  // Transactions
+  if (Array.isArray(p.transactions) && p.transactions.length > 0) {
+    const txnSheet = ss.getSheetByName('Transactions');
+    const existing = getExistingIds('Transactions', 0);
+    p.transactions.forEach(function(item) {
+      if (!existing.has(String(item.transactionId))) {
+        txnSheet.appendRow([
+          item.transactionId, item.transactionDate, item.transactionType, item.referenceId || '',
+          item.accountId, Number(item.amount) || 0, item.direction, item.description || '', item.paymentMethod || 'CASH', item.createdAt || new Date().toISOString()
+        ]);
+        existing.add(String(item.transactionId));
+        result.migrated.transactions++;
+      } else {
+        result.skipped.transactions++;
+      }
+    });
+  }
+
+  // Budgets
+  if (Array.isArray(p.budgets) && p.budgets.length > 0) {
+    const bdgSheet = ss.getSheetByName('Budgets');
+    const existing = getExistingIds('Budgets', 0);
+    p.budgets.forEach(function(b) {
+      if (!existing.has(String(b.budgetId))) {
+        bdgSheet.appendRow([b.budgetId, b.categoryId, Number(b.budgetAmount) || 0, b.period || 'FLAVENCIA 2026', b.createdAt || new Date().toISOString(), b.updatedAt || new Date().toISOString()]);
+        existing.add(String(b.budgetId));
+        result.migrated.budgets++;
+      } else {
+        result.skipped.budgets++;
+      }
+    });
+  }
+
+  logAudit(ss, 'MIGRATION', 'SYSTEM', 'BATCH-MIGRATE', '', JSON.stringify(result.migrated), p.performedBy || 'Admin', new Date().toISOString());
+
+  return { success: true, message: 'Migration completed safely with zero duplicates', summary: result };
 }
 
 function handleAddAccount(ss, p) {

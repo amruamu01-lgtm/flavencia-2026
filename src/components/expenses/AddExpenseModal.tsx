@@ -28,6 +28,12 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
   const [remarks, setRemarks] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (expenseCategories.length > 0 && !expenseCategories.some(c => c.categoryId === categoryId)) {
+      setCategoryId(expenseCategories[0].categoryId);
+    }
+  }, [expenseCategories, categoryId]);
+
   // Compute live preview of balance & status
   const numTotal = parseFloat(totalAmount) || 0;
   const numPaid = parseFloat(paidAmount) || 0;

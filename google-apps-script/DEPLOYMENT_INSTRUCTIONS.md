@@ -46,12 +46,14 @@ Follow these 4 simple steps to connect your FLAVENCIA 2026 React Web App to your
 
 ---
 
-### STEP 5: Connect in the Web App
+### STEP 5: Centralized Multi-Device Connectivity
 
-1. Log in to the FLAVENCIA 2026 Web App (`admin` / `flavencia2026`).
-2. Navigate to **Settings** in the left sidebar.
-3. Under **Integration Settings**, paste:
-   - **Google Spreadsheet ID**
-   - **Google Apps Script Web App URL**
-4. Click **Test & Save Connection**.
-5. Your application is now connected to Google Sheets!
+1. In your Vercel deployment dashboard (or in `.env` file locally):
+   - Set the environment variable:
+     ```bash
+     VITE_GAS_URL="https://script.google.com/macros/s/[YOUR_DEPLOYMENT_ID]/exec"
+     ```
+2. **Zero Manual Spreadsheet Configuration Required**:
+   - The Master Google Spreadsheet is connected centrally on the backend.
+   - The Admin and all connected devices (phones, laptops, tablets) automatically connect directly to the central database.
+   - The Admin panel features a real-time **Database Connection Status** indicator and manual **Sync** button without requiring any manual Spreadsheet ID input.

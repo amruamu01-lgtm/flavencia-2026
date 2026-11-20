@@ -23,7 +23,16 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle }) => {
   const { theme, toggleTheme } = useTheme();
   const { adminUsername, logout } = useAuth();
-  const { dateFilter, setDateFilter, refreshData, loading, isBackendConnected } = useFinance();
+  const {
+    dateFilter,
+    setDateFilter,
+    refreshData,
+    loading,
+    isBackendConnected,
+    lastSyncedAt,
+    syncError,
+    isSyncing
+  } = useFinance();
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
@@ -149,28 +158,47 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
             )}
           </div>
 
-          {/* Sync / Refresh Button */}
+          {/* Multi-Device Sync / Refresh Button */}
           <button
             onClick={() => refreshData()}
-            disabled={loading}
-            title="Refresh database records"
-            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            disabled={isSyncing}
+            title={lastSyncedAt ? `Last synced at ${lastSyncedAt.toLocaleTimeString()}. Click to refresh.` : 'Sync with Central Google Sheets Database'}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#1E3A5F]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-[#1E3A5F]' : 'text-gray-500'}`} />
+            <span className="hidden xl:inline text-[11px]">
+              {isSyncing ? 'Syncing...' : lastSyncedAt ? `Synced ${lastSyncedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Sync'}
+            </span>
           </button>
 
-          {/* Database Connection Pill */}
+          {/* Database Central Sync Status Pill */}
           <div
-            title={isBackendConnected ? 'Connected to Google Sheets Web App' : 'Operating in Standalone Database Engine'}
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-50 border border-gray-200"
+            title={
+              syncError
+                ? `Sync issue: ${syncError}`
+                : isBackendConnected
+                ? 'Central Google Sheets Database Connected – All Devices Synchronized'
+                : 'Central Google Sheets Not Configured – Enter Web App URL in Settings'
+            }
+            className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+              syncError
+                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                : isBackendConnected
+                ? 'bg-emerald-50 text-[#16A34A] border-emerald-200'
+                : 'bg-gray-50 text-gray-600 border-gray-200'
+            }`}
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                isBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
+                syncError
+                  ? 'bg-amber-500'
+                  : isBackendConnected
+                  ? 'bg-[#16A34A] animate-pulse'
+                  : 'bg-gray-400'
               }`}
             />
-            <span className="text-gray-700">
-              {isBackendConnected ? 'Google Sheets' : 'Local Master DB'}
+            <span>
+              {syncError ? 'Sync Issue' : isBackendConnected ? 'Google Sheets (Live)' : 'Setup Backend'}
             </span>
           </div>
 

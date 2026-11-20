@@ -27,6 +27,12 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
   const [remarks, setRemarks] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (incomeCategories.length > 0 && !incomeCategories.some(c => c.categoryId === categoryId)) {
+      setCategoryId(incomeCategories[0].categoryId);
+    }
+  }, [incomeCategories, categoryId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);

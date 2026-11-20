@@ -53,6 +53,8 @@ interface FinanceContextType {
   saveBudget: (categoryId: string, budgetAmount: number) => Promise<{ success: boolean; error?: string }>;
   deleteBudget: (budgetId: string) => Promise<{ success: boolean; error?: string }>;
   addCategory: (name: string, type: 'INCOME' | 'EXPENSE', desc?: string) => Promise<{ success: boolean; error?: string }>;
+  updateCategory: (categoryId: string, name: string, type: 'INCOME' | 'EXPENSE', desc?: string, isActive?: boolean) => Promise<{ success: boolean; error?: string }>;
+  deleteCategory: (categoryId: string) => Promise<{ success: boolean; error?: string }>;
   addAccount: (name: string, type: any, openingBalance: number) => Promise<{ success: boolean; error?: string }>;
   updateSettings: (key: string, value: string) => Promise<{ success: boolean; error?: string }>;
 
@@ -60,6 +62,9 @@ interface FinanceContextType {
   loading: boolean;
   submitting: boolean;
   isBackendConnected: boolean;
+  lastSyncedAt: Date | null;
+  syncError: string | null;
+  isSyncing: boolean;
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
@@ -84,10 +89,14 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState<boolean>(true);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
 
-  // Load all initial financial data
+  // Load all initial financial data from Central Database
   const refreshData = async () => {
-    setLoading(true);
+    setIsSyncing(true);
+    setSyncError(null);
     try {
       const res = await callBackendApi('getAllData');
       if (res.success && res.data) {
@@ -101,17 +110,41 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setBudgetList(res.data.budgets || []);
         setAuditLogList(res.data.auditLogs || []);
         setSettingsList(res.data.settings || []);
+        setLastSyncedAt(new Date());
+        setSyncError(null);
+      } else {
+        setSyncError(res.error || 'Failed to sync data with central database');
       }
       setIsBackendConnected(!!getGasBackendUrl());
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error refreshing finance data:', err);
+      setSyncError(err.message || 'Network error syncing with Google Sheets');
     } finally {
       setLoading(false);
+      setIsSyncing(false);
     }
   };
 
   useEffect(() => {
     refreshData();
+
+    // Multi-device sync: auto-refresh when tab/window regains focus
+    const handleFocus = () => {
+      refreshData();
+    };
+    window.addEventListener('focus', handleFocus);
+
+    // Periodic background sync every 30 seconds
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        refreshData();
+      }
+    }, 30000);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      clearInterval(interval);
+    };
   }, []);
 
   // Compute Account Balances dynamically with Running Totals
@@ -572,6 +605,46 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
+  const updateCategory = async (categoryId: string, name: string, type: 'INCOME' | 'EXPENSE', desc?: string, isActive = true) => {
+    if (submitting) return { success: false, error: 'Operation in progress' };
+    setSubmitting(true);
+    try {
+      const res = await callBackendApi('updateCategory', {
+        categoryId,
+        categoryName: name,
+        categoryType: type,
+        description: desc,
+        isActive
+      });
+      if (res.success) {
+        await refreshData();
+        return { success: true };
+      }
+      return { success: false, error: res.error || 'Failed to update category' };
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const deleteCategory = async (categoryId: string) => {
+    if (submitting) return { success: false, error: 'Operation in progress' };
+    setSubmitting(true);
+    try {
+      const res = await callBackendApi('deleteCategory', { categoryId });
+      if (res.success) {
+        await refreshData();
+        return { success: true };
+      }
+      return { success: false, error: res.error || 'Failed to delete category' };
+    } catch (e: any) {
+      return { success: false, error: e.message };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const addAccount = async (name: string, type: any, openingBalance: number) => {
     if (submitting) return { success: false, error: 'Operation in progress' };
     setSubmitting(true);
@@ -636,11 +709,16 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         saveBudget,
         deleteBudget,
         addCategory,
+        updateCategory,
+        deleteCategory,
         addAccount,
         updateSettings,
         loading,
         submitting,
-        isBackendConnected
+        isBackendConnected,
+        lastSyncedAt,
+        syncError,
+        isSyncing
       }}
     >
       {children}
