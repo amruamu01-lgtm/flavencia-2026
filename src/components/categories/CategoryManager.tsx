@@ -36,20 +36,20 @@ export const CategoryManager: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             <span>Category Management</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20">
+            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-navy-50 text-[#1E3A5F] border border-navy-200">
               {categoryList.length} Categories
             </span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-gray-500 mt-0.5">
             Manage chart of accounts for festival receipts and expenditures
           </p>
         </div>
 
         <button
           onClick={() => setIsAddOpen(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-400 via-gold-500 to-amber-600 text-slate-950 hover:brightness-110 shadow-md shadow-gold-500/20 transition-all self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white shadow-none transition-all self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           Add Custom Category
@@ -58,9 +58,9 @@ export const CategoryManager: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Income Categories */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+        <div className="p-5 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
+          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A]" />
             Income Categories ({incomeCategories.length})
           </h3>
 
@@ -68,18 +68,18 @@ export const CategoryManager: React.FC = () => {
             {incomeCategories.map(cat => (
               <div
                 key={cat.categoryId}
-                className="p-3 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-100 dark:border-slate-800/80 flex items-center justify-between"
+                className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100 flex items-center justify-between"
               >
                 <div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <div className="text-xs font-bold text-gray-900 flex items-center gap-2">
                     {cat.categoryName}
-                    <span className="text-[10px] font-mono text-slate-400">({cat.categoryId})</span>
+                    <span className="text-[10px] font-mono text-gray-400">({cat.categoryId})</span>
                   </div>
                   {cat.description && (
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{cat.description}</p>
+                    <p className="text-[11px] text-gray-500 mt-0.5">{cat.description}</p>
                   )}
                 </div>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-500">
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#16A34A]">
                   <CheckCircle className="w-3 h-3" />
                   Active
                 </span>
@@ -89,9 +89,9 @@ export const CategoryManager: React.FC = () => {
         </div>
 
         {/* Expense Categories */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+        <div className="p-5 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
+          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626]" />
             Expense Categories ({expenseCategories.length})
           </h3>
 
@@ -99,18 +99,18 @@ export const CategoryManager: React.FC = () => {
             {expenseCategories.map(cat => (
               <div
                 key={cat.categoryId}
-                className="p-3 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-100 dark:border-slate-800/80 flex items-center justify-between"
+                className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100 flex items-center justify-between"
               >
                 <div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <div className="text-xs font-bold text-gray-900 flex items-center gap-2">
                     {cat.categoryName}
-                    <span className="text-[10px] font-mono text-slate-400">({cat.categoryId})</span>
+                    <span className="text-[10px] font-mono text-gray-400">({cat.categoryId})</span>
                   </div>
                   {cat.description && (
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{cat.description}</p>
+                    <p className="text-[11px] text-gray-500 mt-0.5">{cat.description}</p>
                   )}
                 </div>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-500">
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#16A34A]">
                   <CheckCircle className="w-3 h-3" />
                   Active
                 </span>
@@ -129,20 +129,20 @@ export const CategoryManager: React.FC = () => {
         maxWidth="sm"
       >
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+          <div className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
               Category Type *
             </label>
             <select
               value={type}
               onChange={e => setType(e.target.value as 'INCOME' | 'EXPENSE')}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-100 font-semibold"
+              className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-semibold focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
             >
               <option value="EXPENSE">EXPENSE CATEGORY</option>
               <option value="INCOME">INCOME CATEGORY</option>
@@ -150,7 +150,7 @@ export const CategoryManager: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
               Category Name *
             </label>
             <input
@@ -159,12 +159,12 @@ export const CategoryManager: React.FC = () => {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. VIP Hospitality / Merch Sales"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
               Description
             </label>
             <textarea
@@ -172,22 +172,22 @@ export const CategoryManager: React.FC = () => {
               value={desc}
               onChange={e => setDesc(e.target.value)}
               placeholder="Accounting scope and purpose"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-100 resize-none"
+              className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] resize-none focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
             />
           </div>
 
-          <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+          <div className="pt-3 flex items-center justify-end gap-3 border-t border-gray-200">
             <button
               type="button"
               onClick={() => setIsAddOpen(false)}
-              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200"
+              className="px-4 py-2 text-xs font-semibold text-gray-500 hover:text-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 text-xs font-bold bg-gold-500 hover:bg-gold-600 text-slate-950 rounded-xl"
+              className="px-5 py-2 text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white rounded-lg transition-colors"
             >
               {submitting ? 'Saving...' : 'Add Category'}
             </button>

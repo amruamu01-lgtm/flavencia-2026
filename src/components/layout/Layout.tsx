@@ -28,7 +28,7 @@ export const Layout: React.FC<LayoutProps> = ({ activeTab, onSelectTab, children
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#09090C] text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-[#F3F4F6] text-[#374151] flex flex-col font-sans">
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}

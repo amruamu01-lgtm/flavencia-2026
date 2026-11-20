@@ -54,41 +54,41 @@ export const TransactionLedger: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             <span>Transaction Ledger</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20">
+            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-navy-50 text-[#1E3A5F] border border-navy-200">
               {displayTxns.length} Entries
             </span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Total Credits: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{formatCurrency(totalCredits)}</strong> • Total Debits:{' '}
-            <strong className="text-rose-600 dark:text-rose-400 font-bold">{formatCurrency(totalDebits)}</strong>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Total Credits: <strong className="text-[#16A34A] font-bold">{formatCurrency(totalCredits)}</strong> • Total Debits:{' '}
+            <strong className="text-[#DC2626] font-bold">{formatCurrency(totalDebits)}</strong>
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => exportTransactionsToExcel(displayTxns)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#15151C] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1D1D26] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors"
           >
-            <FileDown className="w-3.5 h-3.5 text-emerald-500" />
+            <FileDown className="w-3.5 h-3.5 text-[#16A34A]" />
             Excel
           </button>
 
           <button
             onClick={() => generateTransactionLedgerPdf(displayTxns, 'FLAVENCIA 2026 - Master Transaction Ledger')}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#15151C] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1D1D26] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors"
           >
-            <FileText className="w-3.5 h-3.5 text-gold-500" />
+            <FileText className="w-3.5 h-3.5 text-[#1E3A5F]" />
             PDF
           </button>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-3">
+      <div className="p-4 rounded-xl bg-white border border-gray-200 shadow-none flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={searchTerm}
@@ -97,7 +97,7 @@ export const TransactionLedger: React.FC = () => {
               setCurrentPage(1);
             }}
             placeholder="Search txn ID, reference, description, account..."
-            className="w-full text-xs pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-[#191921] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500/50"
+            className="w-full text-xs pl-9 pr-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] placeholder-gray-400 focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
           />
         </div>
 
@@ -108,7 +108,7 @@ export const TransactionLedger: React.FC = () => {
               setSelectedType(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#191921] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+            className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
           >
             <option value="ALL">All Transaction Types</option>
             <option value="INCOME">INCOME (Credits)</option>
@@ -125,7 +125,7 @@ export const TransactionLedger: React.FC = () => {
               setSelectedAccount(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#191921] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+            className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
           >
             <option value="ALL">All Accounts</option>
             {accountList.map(a => (
@@ -138,18 +138,18 @@ export const TransactionLedger: React.FC = () => {
       </div>
 
       {/* Ledger Table */}
-      <div className="bg-white dark:bg-[#121217] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-none overflow-hidden">
         {displayTxns.length === 0 ? (
           <div className="py-16 text-center">
-            <ReceiptText className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700 mb-2" />
-            <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+            <ReceiptText className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+            <p className="text-sm font-semibold text-gray-600">
               No transactions match your search or filter criteria.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-[#171720] border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase tracking-wider text-[10px]">
+              <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-3 px-4">Txn ID</th>
                   <th className="py-3 px-4">Date</th>
@@ -163,39 +163,39 @@ export const TransactionLedger: React.FC = () => {
                   <th className="py-3 px-4 text-right">Running Bal</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
+              <tbody className="divide-y divide-gray-100 font-medium text-[#374151]">
                 {paginatedTxns.map(t => (
-                  <tr key={t.transactionId} className="hover:bg-slate-50/50 dark:hover:bg-[#171720] transition-colors">
-                    <td className="py-3 px-4 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                  <tr key={t.transactionId} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="py-3 px-4 font-mono text-[11px] text-gray-500">
                       {t.transactionId}
                     </td>
-                    <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
+                    <td className="py-3 px-4 text-gray-700">
                       {formatDate(t.transactionDate)}
                     </td>
                     <td className="py-3 px-4">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-700 font-mono">
                         {t.transactionType}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-mono text-[11px] text-gold-600 dark:text-gold-400">
+                    <td className="py-3 px-4 font-mono text-[11px] text-[#1E3A5F] font-semibold">
                       {t.referenceId || '-'}
                     </td>
-                    <td className="py-3 px-4 max-w-xs truncate text-slate-900 dark:text-slate-100" title={t.description}>
+                    <td className="py-3 px-4 max-w-xs truncate text-gray-900" title={t.description}>
                       {t.description}
                     </td>
-                    <td className="py-3 px-4 text-slate-600 dark:text-slate-300 font-semibold">
+                    <td className="py-3 px-4 text-gray-700 font-semibold">
                       {t.accountName || t.accountId}
                     </td>
-                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400">
+                    <td className="py-3 px-4 text-gray-500">
                       {t.paymentMethod}
                     </td>
-                    <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                    <td className="py-3 px-4 text-right font-bold text-[#16A34A]">
                       {t.direction === 'CREDIT' ? `+${formatCurrency(t.amount)}` : '-'}
                     </td>
-                    <td className="py-3 px-4 text-right font-bold text-rose-600 dark:text-rose-400">
+                    <td className="py-3 px-4 text-right font-bold text-[#DC2626]">
                       {t.direction === 'DEBIT' ? `-${formatCurrency(t.amount)}` : '-'}
                     </td>
-                    <td className="py-3 px-4 text-right font-bold font-mono text-slate-900 dark:text-slate-100">
+                    <td className="py-3 px-4 text-right font-bold font-mono text-gray-900">
                       {t.runningBalance !== undefined ? formatCurrency(t.runningBalance) : '-'}
                     </td>
                   </tr>
@@ -207,7 +207,7 @@ export const TransactionLedger: React.FC = () => {
 
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
             <div>
               Page {currentPage} of {totalPages} ({displayTxns.length} records)
             </div>
@@ -215,14 +215,14 @@ export const TransactionLedger: React.FC = () => {
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 disabled:opacity-40"
+                className="px-2.5 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40"
               >
                 Previous
               </button>
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 disabled:opacity-40"
+                className="px-2.5 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40"
               >
                 Next
               </button>

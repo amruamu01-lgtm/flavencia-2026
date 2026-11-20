@@ -82,7 +82,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
       maxWidth="lg"
     >
       {error && (
-        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+        <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium">
           {error}
         </div>
       )}
@@ -91,7 +91,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Date */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Income Date *
             </label>
             <input
@@ -99,19 +99,19 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
               required
               value={date}
               onChange={e => setDate(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Category *
             </label>
             <select
               value={categoryId}
               onChange={e => setCategoryId(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             >
               {incomeCategories.map(cat => (
                 <option key={cat.categoryId} value={cat.categoryId}>
@@ -124,7 +124,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
 
         {/* Source Name */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
             Received From / Source *
           </label>
           <input
@@ -133,14 +133,14 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
             value={sourceName}
             onChange={e => setSourceName(e.target.value)}
             placeholder="e.g. John Doe / Tata Consultancy / Stall 4"
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
           />
         </div>
 
         {/* Amount & Account */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Amount (₹ INR) *
             </label>
             <input
@@ -151,18 +151,18 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
               value={amount}
               onChange={e => setAmount(e.target.value)}
               placeholder="50000"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-emerald-600 dark:text-emerald-400"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-[#16A34A] font-bold focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Deposit Account *
             </label>
             <select
               value={accountId}
               onChange={e => setAccountId(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-semibold focus:bg-white focus:border-[#1E3A5F]"
             >
               {accountList.map(acc => (
                 <option key={acc.accountId} value={acc.accountId}>
@@ -176,13 +176,13 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
         {/* Payment Method & Received By */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Payment Method *
             </label>
             <select
               value={paymentMethod}
               onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             >
               <option value="CASH">CASH</option>
               <option value="BANK_TRANSFER">BANK TRANSFER (NEFT/RTGS/IMPS)</option>
@@ -194,7 +194,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Received By
             </label>
             <input
@@ -202,7 +202,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
               value={receivedBy}
               onChange={e => setReceivedBy(e.target.value)}
               placeholder="e.g. Finance Coordinator"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
         </div>
@@ -210,7 +210,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
         {/* Reference Number & Receipt URL */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Reference / Txn / UTR No.
             </label>
             <input
@@ -218,12 +218,12 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
               value={referenceNumber}
               onChange={e => setReferenceNumber(e.target.value)}
               placeholder="UTR or Cheque / Cash Receipt No."
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Google Drive Receipt URL
             </label>
             <input
@@ -231,14 +231,14 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
               value={receiptUrl}
               onChange={e => setReceiptUrl(e.target.value)}
               placeholder="https://drive.google.com/..."
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
         </div>
 
         {/* Description & Remarks */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
             Description / Purpose
           </label>
           <input
@@ -246,12 +246,12 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
             value={description}
             onChange={e => setDescription(e.target.value)}
             placeholder="e.g. Title Sponsorship 1st installment"
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
             Internal Remarks
           </label>
           <textarea
@@ -259,23 +259,23 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
             value={remarks}
             onChange={e => setRemarks(e.target.value)}
             placeholder="Additional notes for accounting audit"
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 resize-none"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F] resize-none"
           />
         </div>
 
         {/* Buttons */}
-        <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+        <div className="pt-3 flex items-center justify-end gap-3 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-400 via-gold-500 to-amber-600 text-slate-950 hover:brightness-110 shadow-md shadow-gold-500/20"
+            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-[#1E3A5F] hover:bg-[#172E4D] text-white shadow-none transition-all"
           >
             {submitting ? 'Saving...' : 'Record & Credit Income'}
           </button>

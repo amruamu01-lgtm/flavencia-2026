@@ -14,7 +14,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem('flavencia_theme');
     if (saved === 'dark' || saved === 'light') return saved;
-    return 'dark'; // Default luxury dark theme for Flavencia
+    return 'light'; // Clean minimal professional light theme by default
   });
 
   useEffect(() => {

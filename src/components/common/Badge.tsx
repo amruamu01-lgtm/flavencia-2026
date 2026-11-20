@@ -11,20 +11,20 @@ export const Badge: React.FC<BadgeProps> = ({ type, value }) => {
     const status = value as PaymentStatus;
     if (status === 'PAID') {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/60">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200">
           ● PAID
         </span>
       );
     }
     if (status === 'PARTIALLY PAID') {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800/60">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
           ◐ PARTIALLY PAID
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800/60">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-[#DC2626] border border-rose-200">
         ○ UNPAID
       </span>
     );
@@ -34,13 +34,13 @@ export const Badge: React.FC<BadgeProps> = ({ type, value }) => {
     const dir = value as TransactionDirection;
     if (dir === 'CREDIT') {
       return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-[#16A34A] border border-emerald-200">
           + CREDIT
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-rose-50 text-[#DC2626] border border-rose-200">
         - DEBIT
       </span>
     );
@@ -49,27 +49,27 @@ export const Badge: React.FC<BadgeProps> = ({ type, value }) => {
   if (type === 'budget') {
     if (value === 'EXCEEDED') {
       return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-400 border border-red-500/40">
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-rose-50 text-[#DC2626] border border-rose-200">
           EXCEEDED
         </span>
       );
     }
     if (value === 'WARNING') {
       return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-400 border border-amber-500/40">
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
           NEAR LIMIT (80%+)
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-400">
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-[#16A34A] border border-emerald-200">
         HEALTHY
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
       {value}
     </span>
   );

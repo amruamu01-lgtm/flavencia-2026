@@ -103,7 +103,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       maxWidth="md"
     >
       {error && (
-        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+        <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium">
           {error}
         </div>
       )}
@@ -111,7 +111,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Select Expense */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
             Select Pending Expense *
           </label>
           <select
@@ -121,7 +121,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               const exp = expenseList.find(x => x.expenseId === e.target.value);
               if (exp) setAmount(String(exp.balanceAmount));
             }}
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-semibold focus:bg-white focus:border-[#1E3A5F]"
           >
             <option value="">-- Choose an outstanding bill --</option>
             {eligibleExpenses.map(exp => (
@@ -134,18 +134,18 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
         {/* Expense Summary Box */}
         {currentExpense && (
-          <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-[#171720] border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+          <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-xs space-y-2">
             <div className="flex justify-between">
-              <span className="text-slate-400">Total Invoice:</span>
-              <span className="font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(currentExpense.totalAmount)}</span>
+              <span className="text-gray-500">Total Invoice:</span>
+              <span className="font-semibold text-gray-900">{formatCurrency(currentExpense.totalAmount)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Already Paid:</span>
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">{formatCurrency(currentExpense.paidAmount)}</span>
+              <span className="text-gray-500">Already Paid:</span>
+              <span className="font-semibold text-[#16A34A]">{formatCurrency(currentExpense.paidAmount)}</span>
             </div>
-            <div className="flex justify-between border-t border-slate-200 dark:border-slate-700/60 pt-1.5 font-bold">
-              <span className="text-amber-500">Remaining Balance:</span>
-              <span className="text-amber-500">{formatCurrency(currentExpense.balanceAmount)}</span>
+            <div className="flex justify-between border-t border-gray-200 pt-1.5 font-bold">
+              <span className="text-[#DC2626]">Remaining Balance:</span>
+              <span className="text-[#DC2626]">{formatCurrency(currentExpense.balanceAmount)}</span>
             </div>
           </div>
         )}
@@ -153,14 +153,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Payment Amount */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
               Payment Amount (₹) *
             </label>
             {currentExpense && (
               <button
                 type="button"
                 onClick={handlePayFullOutstanding}
-                className="text-[10px] text-gold-500 hover:underline font-semibold"
+                className="text-[10px] text-[#1E3A5F] hover:underline font-semibold"
               >
                 Pay Full Balance ({formatCurrency(currentExpense.balanceAmount)})
               </button>
@@ -174,14 +174,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             value={amount}
             onChange={e => setAmount(e.target.value)}
             placeholder="Enter payment amount"
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-rose-600 dark:text-rose-400"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-[#DC2626] font-bold focus:bg-white focus:border-[#1E3A5F]"
           />
         </div>
 
         {/* Date & Account */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Payment Date *
             </label>
             <input
@@ -189,18 +189,18 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               required
               value={paymentDate}
               onChange={e => setPaymentDate(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Payment Account *
             </label>
             <select
               value={accountId}
               onChange={e => setAccountId(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-semibold focus:bg-white focus:border-[#1E3A5F]"
             >
               {accountList.map(acc => (
                 <option key={acc.accountId} value={acc.accountId}>
@@ -214,13 +214,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Method & Ref */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Payment Method *
             </label>
             <select
               value={paymentMethod}
               onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             >
               <option value="BANK_TRANSFER">BANK TRANSFER (NEFT/RTGS/IMPS)</option>
               <option value="CASH">CASH</option>
@@ -231,7 +231,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               UTR / Cheque Ref No.
             </label>
             <input
@@ -239,14 +239,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               value={referenceNumber}
               onChange={e => setReferenceNumber(e.target.value)}
               placeholder="e.g. UTR1298491823"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
         </div>
 
         {/* Remarks */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
             Payment Remarks / Voucher Notes
           </label>
           <input
@@ -254,23 +254,23 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             value={remarks}
             onChange={e => setRemarks(e.target.value)}
             placeholder="e.g. 2nd advance payment against bill"
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
           />
         </div>
 
         {/* Buttons */}
-        <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+        <div className="pt-3 flex items-center justify-end gap-3 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-700 text-white hover:brightness-110 shadow-md shadow-emerald-500/20"
+            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-[#1E3A5F] hover:bg-[#172E4D] text-white shadow-none transition-all"
           >
             {submitting ? 'Recording...' : 'Disburse & Update Ledger'}
           </button>

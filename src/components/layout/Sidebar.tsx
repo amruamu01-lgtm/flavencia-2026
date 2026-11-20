@@ -81,22 +81,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col bg-[#0A0A0D] text-slate-200 border-r border-[#1F1F28] transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col bg-white text-[#374151] border-r border-gray-200 transition-all duration-300 ease-in-out ${
           collapsed ? 'w-20' : 'w-64'
         } ${isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {/* Brand Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-[#1F1F28] bg-[#0E0E14]">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 bg-white">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 via-gold-500 to-amber-700 flex items-center justify-center shadow-lg shadow-gold-500/10 flex-shrink-0">
-              <span className="font-extrabold text-slate-950 text-xl font-serif">F</span>
+            <div className="w-10 h-10 rounded-xl bg-[#1E3A5F] flex items-center justify-center shadow-sm flex-shrink-0">
+              <span className="font-extrabold text-white text-xl font-serif">F</span>
             </div>
             {!collapsed && (
               <div className="flex flex-col truncate">
-                <span className="font-bold text-sm tracking-wide text-white uppercase font-sans flex items-center gap-1">
-                  FLAVENCIA <span className="text-gold-400 font-extrabold">2026</span>
+                <span className="font-bold text-sm tracking-wide text-[#1E3A5F] uppercase font-sans flex items-center gap-1">
+                  FLAVENCIA <span className="text-gray-900 font-extrabold">2026</span>
                 </span>
-                <span className="text-[10px] tracking-widest text-gold-400 font-semibold uppercase">
+                <span className="text-[10px] tracking-widest text-gray-500 font-semibold uppercase">
                   BEYOND BOUNDARIES
                 </span>
               </div>
@@ -106,14 +106,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Desktop Collapse Toggle */}
           <button
             onClick={onToggleCollapse}
-            className="hidden lg:flex p-1.5 rounded-lg text-slate-400 hover:text-gold-400 hover:bg-[#1A1A24] transition-colors"
+            className="hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-[#1E3A5F] hover:bg-gray-100 transition-colors"
           >
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </div>
 
         {/* Navigation Items */}
-        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800">
+        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1 scrollbar-thin scrollbar-thumb-gray-200">
           {menuItems.map(item => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -126,23 +126,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 title={collapsed ? item.label : undefined}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group relative ${
                   isActive
-                    ? isHighlight
-                      ? 'bg-gradient-to-r from-gold-500 to-amber-600 text-slate-950 shadow-md shadow-gold-500/20 font-bold'
-                      : 'bg-gold-500/15 text-gold-400 border border-gold-500/30'
+                    ? 'bg-[#F0F4F8] text-[#1E3A5F] font-bold'
                     : isHighlight
-                    ? 'text-gold-400 hover:bg-gold-500/10 border border-gold-500/20'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-[#15151D]'
+                    ? 'text-[#1E3A5F] hover:bg-[#F0F4F8] font-semibold'
+                    : 'text-[#374151] hover:text-[#1E3A5F] hover:bg-gray-100'
                 }`}
               >
                 <Icon
-                  className={`w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110 ${
+                  className={`w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-105 ${
                     isActive
-                      ? isHighlight
-                        ? 'text-slate-950'
-                        : 'text-gold-400'
+                      ? 'text-[#1E3A5F]'
                       : isHighlight
-                      ? 'text-gold-400'
-                      : 'text-slate-400 group-hover:text-slate-200'
+                      ? 'text-[#1E3A5F]'
+                      : 'text-gray-500 group-hover:text-[#1E3A5F]'
                   }`}
                 />
 
@@ -150,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span className="truncate flex-1 text-left flex items-center justify-between">
                     {item.label}
                     {isHighlight && (
-                      <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-gold-400/20 text-gold-300 font-mono">
+                      <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-blue-50 text-[#1E3A5F] font-bold">
                         Key
                       </span>
                     )}
@@ -159,11 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Active Indicator Bar */}
                 {isActive && (
-                  <div
-                    className={`absolute left-0 top-2 bottom-2 w-1 rounded-r-full ${
-                      isHighlight ? 'bg-slate-950' : 'bg-gold-400'
-                    }`}
-                  />
+                  <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#1E3A5F]" />
                 )}
               </button>
             );
@@ -172,12 +164,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Bottom Status Box */}
         {!collapsed && (
-          <div className="p-3 m-3 rounded-xl bg-[#121218] border border-[#20202A] text-[11px]">
-            <div className="flex items-center gap-2 text-gold-400 font-semibold mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
+          <div className="p-3 m-3 rounded-xl bg-[#F3F4F6] border border-gray-200 text-[11px]">
+            <div className="flex items-center gap-2 text-[#1E3A5F] font-bold mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-[#1E3A5F]" />
               Direct Entry System
             </div>
-            <p className="text-slate-400 leading-relaxed text-[10px]">
+            <p className="text-gray-600 leading-relaxed text-[10px]">
               Fast execution mode active. All approved income and expenses write directly to the master ledger.
             </p>
           </div>

@@ -44,24 +44,24 @@ export const AccountCards: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             <span>Cash & Bank Management</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20">
+            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-navy-50 text-[#1E3A5F] border border-navy-200">
               {accountList.length} Active Accounts
             </span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-gray-500 mt-0.5">
             Total Combined Liquid Funds:{' '}
-            <strong className="text-gold-500 font-bold">{formatCurrency(totalLiquidSurplus)}</strong>
+            <strong className="text-[#1E3A5F] font-bold">{formatCurrency(totalLiquidSurplus)}</strong>
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsAddAccountOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#15151C] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1D1D26] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors shadow-none"
           >
-            <Plus className="w-3.5 h-3.5 text-gold-500" />
+            <Plus className="w-3.5 h-3.5 text-[#1E3A5F]" />
             Add Account
           </button>
 
@@ -70,7 +70,7 @@ export const AccountCards: React.FC = () => {
               setDefaultSourceAccount(undefined);
               setIsTransferOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-gold-400 via-gold-500 to-amber-600 text-slate-950 hover:brightness-110 shadow-md shadow-gold-500/20 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#1E3A5F] hover:bg-[#172E4D] text-white shadow-none transition-all"
           >
             <ArrowRightLeft className="w-4 h-4" />
             Transfer Funds
@@ -88,39 +88,39 @@ export const AccountCards: React.FC = () => {
           return (
             <div
               key={acc.accountId}
-              className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800/80 shadow-sm hover:border-gold-500/30 transition-all flex flex-col justify-between"
+              className="p-5 rounded-xl bg-white border border-gray-200 shadow-none hover:border-gray-300 transition-all flex flex-col justify-between"
             >
               <div>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2.5 rounded-xl bg-gold-500/10 text-gold-500 dark:text-gold-400">
+                    <div className="p-2.5 rounded-xl bg-navy-50 text-[#1E3A5F]">
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                      <h3 className="text-sm font-bold text-gray-900">
                         {acc.accountName}
                       </h3>
-                      <span className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">
+                      <span className="text-[10px] uppercase font-semibold tracking-wider text-gray-500">
                         {acc.accountType} ACCOUNT
                       </span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-gray-100 text-gray-600">
                     {acc.accountId}
                   </span>
                 </div>
 
                 {/* Big Balance */}
                 <div className="my-4">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                  <span className="text-[10px] uppercase font-bold text-gray-500 block mb-1">
                     Current Balance
                   </span>
                   <div
                     className={`text-2xl font-extrabold tracking-tight ${
                       isNegative
-                        ? 'text-rose-600 dark:text-rose-400'
-                        : 'text-slate-900 dark:text-gold-200'
+                        ? 'text-[#DC2626]'
+                        : 'text-[#1E3A5F]'
                     }`}
                   >
                     {formatCurrency(currentBal)}
@@ -128,22 +128,22 @@ export const AccountCards: React.FC = () => {
                 </div>
 
                 {/* Sub-Metrics: Opening, Credits, Debits */}
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="pt-3 border-t border-gray-100 grid grid-cols-3 gap-2 text-center text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Opening</span>
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="text-[10px] text-gray-500 block">Opening</span>
+                    <span className="font-semibold text-gray-700">
                       {formatCurrency(acc.openingBalance)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Credits (+)</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-[10px] text-gray-500 block">Credits (+)</span>
+                    <span className="font-bold text-[#16A34A]">
                       +{formatCurrency(acc.totalCredits || 0)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Debits (-)</span>
-                    <span className="font-bold text-rose-600 dark:text-rose-400">
+                    <span className="text-[10px] text-gray-500 block">Debits (-)</span>
+                    <span className="font-bold text-[#DC2626]">
                       -{formatCurrency(acc.totalDebits || 0)}
                     </span>
                   </div>
@@ -151,14 +151,14 @@ export const AccountCards: React.FC = () => {
               </div>
 
               {/* Card Action */}
-              <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <div className="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between">
+                <span className="text-[11px] text-gray-500 flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                   Active Liquid Asset
                 </span>
                 <button
                   onClick={() => handleQuickTransfer(acc.accountId)}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-gold-500 hover:text-gold-400 hover:underline"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-[#1E3A5F] hover:underline"
                 >
                   <ArrowRightLeft className="w-3.5 h-3.5" />
                   Transfer From
@@ -170,30 +170,30 @@ export const AccountCards: React.FC = () => {
       </div>
 
       {/* Inter-Account Transfer History */}
-      <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="p-5 rounded-xl bg-white border border-gray-200 shadow-none">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <ArrowRightLeft className="w-4 h-4 text-gold-500" />
+            <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <ArrowRightLeft className="w-4 h-4 text-[#1E3A5F]" />
               Inter-Account Transfer History
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-gray-500">
               Audit log of all funds transferred between cash, bank, and UPI
             </p>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-gray-400 font-mono">
             {transferList.length} transfers
           </span>
         </div>
 
         {transferList.length === 0 ? (
-          <div className="py-10 text-center text-xs text-slate-400">
+          <div className="py-10 text-center text-xs text-gray-400">
             No inter-account transfers executed yet.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase tracking-wider text-[10px]">
+              <thead className="border-b border-gray-200 text-gray-500 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-2.5 px-3">Transfer ID</th>
                   <th className="py-2.5 px-3">Date</th>
@@ -204,19 +204,19 @@ export const AccountCards: React.FC = () => {
                   <th className="py-2.5 px-3 text-right">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
+              <tbody className="divide-y divide-gray-100 font-medium">
                 {transferList.map(t => {
                   const from = accountList.find(a => a.accountId === t.fromAccountId)?.accountName || t.fromAccountId;
                   const to = accountList.find(a => a.accountId === t.toAccountId)?.accountName || t.toAccountId;
                   return (
-                    <tr key={t.transferId} className="hover:bg-slate-50/50 dark:hover:bg-[#171720]">
-                      <td className="py-2.5 px-3 font-mono text-[11px] text-slate-500">{t.transferId}</td>
-                      <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300">{formatDate(t.transferDate)}</td>
-                      <td className="py-2.5 px-3 text-rose-500 font-semibold">{from}</td>
-                      <td className="py-2.5 px-3 text-emerald-500 font-semibold">{to}</td>
-                      <td className="py-2.5 px-3 font-mono text-slate-400">{t.referenceNumber || '-'}</td>
-                      <td className="py-2.5 px-3 text-slate-600 dark:text-slate-400 max-w-xs truncate">{t.description}</td>
-                      <td className="py-2.5 px-3 text-right font-bold text-slate-900 dark:text-slate-100">
+                    <tr key={t.transferId} className="hover:bg-gray-50">
+                      <td className="py-2.5 px-3 font-mono text-[11px] text-gray-500">{t.transferId}</td>
+                      <td className="py-2.5 px-3 text-gray-700">{formatDate(t.transferDate)}</td>
+                      <td className="py-2.5 px-3 text-[#DC2626] font-semibold">{from}</td>
+                      <td className="py-2.5 px-3 text-[#16A34A] font-semibold">{to}</td>
+                      <td className="py-2.5 px-3 font-mono text-gray-400">{t.referenceNumber || '-'}</td>
+                      <td className="py-2.5 px-3 text-gray-600 max-w-xs truncate">{t.description}</td>
+                      <td className="py-2.5 px-3 text-right font-bold text-gray-900">
                         {formatCurrency(t.amount)}
                       </td>
                     </tr>

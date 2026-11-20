@@ -60,13 +60,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/90 dark:bg-[#0E0E13]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6 py-3 transition-colors">
+    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
       <div className="flex items-center justify-between gap-4">
         {/* Left: Mobile hamburger & Active Section Title */}
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
             aria-label="Toggle navigation"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,14 +76,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
 
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <h1 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
                 {activeTabTitle}
               </h1>
-              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20">
+              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase bg-navy-50 text-[#1E3A5F] border border-navy-200">
                 FLAVENCIA 2026
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+            <p className="text-[11px] text-gray-500 hidden sm:block">
               BEYOND BOUNDARIES • Master Financial Controller
             </p>
           </div>
@@ -95,16 +95,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
           <div className="relative">
             <button
               onClick={() => setShowFilterDropdown(prev => !prev)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-[#1A1A22] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 hover:border-gold-500/40 transition-all shadow-sm"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 transition-all shadow-none"
             >
-              <Calendar className="w-3.5 h-3.5 text-gold-500" />
+              <Calendar className="w-3.5 h-3.5 text-[#1E3A5F]" />
               <span className="max-w-[120px] truncate">{dateFilter.label}</span>
               <ChevronDown className="w-3 h-3 opacity-60" />
             </button>
 
             {showFilterDropdown && (
-              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#14141A] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl p-2 z-50">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl border border-gray-200 shadow-xl p-2 z-50">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-2 py-1">
                   Select Filter Range
                 </div>
                 {filterOptions.map(opt => (
@@ -113,8 +113,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
                     onClick={() => handleSelectFilter(opt)}
                     className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                       dateFilter.key === opt.key
-                        ? 'bg-gold-500/15 text-gold-600 dark:text-gold-300 font-semibold'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        ? 'bg-navy-50 text-[#1E3A5F] font-semibold'
+                        : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
                     {opt.label}
@@ -122,24 +122,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
                 ))}
 
                 {/* Custom Date Range Picker */}
-                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-800 px-2">
-                  <div className="text-[10px] font-bold uppercase text-slate-400 mb-1">Custom Dates</div>
+                <div className="mt-2 pt-2 border-t border-gray-200 px-2">
+                  <div className="text-[10px] font-bold uppercase text-gray-400 mb-1">Custom Dates</div>
                   <div className="space-y-1.5">
                     <input
                       type="date"
                       value={customStart}
                       onChange={e => setCustomStart(e.target.value)}
-                      className="w-full text-xs px-2 py-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-slate-200"
+                      className="w-full text-xs px-2 py-1 rounded bg-gray-50 border border-gray-200 text-gray-800"
                     />
                     <input
                       type="date"
                       value={customEnd}
                       onChange={e => setCustomEnd(e.target.value)}
-                      className="w-full text-xs px-2 py-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 dark:text-slate-200"
+                      className="w-full text-xs px-2 py-1 rounded bg-gray-50 border border-gray-200 text-gray-800"
                     />
                     <button
                       onClick={handleApplyCustom}
-                      className="w-full py-1 text-xs font-bold rounded bg-gold-500 hover:bg-gold-600 text-slate-950 transition-colors"
+                      className="w-full py-1 text-xs font-bold rounded bg-[#1E3A5F] hover:bg-[#172E4D] text-white transition-colors"
                     >
                       Apply Range
                     </button>
@@ -154,22 +154,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
             onClick={() => refreshData()}
             disabled={loading}
             title="Refresh database records"
-            className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-gold-500' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#1E3A5F]' : ''}`} />
           </button>
 
           {/* Database Connection Pill */}
           <div
             title={isBackendConnected ? 'Connected to Google Sheets Web App' : 'Operating in Standalone Database Engine'}
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gray-50 border border-gray-200"
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                isBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gold-400'
+                isBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
               }`}
             />
-            <span className="text-slate-700 dark:text-slate-300">
+            <span className="text-gray-700">
               {isBackendConnected ? 'Google Sheets' : 'Local Master DB'}
             </span>
           </div>
@@ -177,25 +177,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, activeTabTitle 
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-gold-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-[#1E3A5F]" /> : <Moon className="w-4 h-4 text-gray-700" />}
           </button>
 
           {/* Admin User Badge & Logout */}
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
             <div className="hidden sm:flex flex-col text-right">
-              <span className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center justify-end gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
+              <span className="text-xs font-bold text-gray-900 flex items-center justify-end gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#1E3A5F]" />
                 {adminUsername}
               </span>
-              <span className="text-[10px] text-slate-400">Single Admin</span>
+              <span className="text-[10px] text-gray-500">Single Admin</span>
             </div>
             <button
               onClick={logout}
               title="Logout"
-              className="p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors"
+              className="p-2 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors"
             >
               <LogOut className="w-4 h-4" />
             </button>

@@ -25,41 +25,37 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#070709] relative overflow-hidden font-sans">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-gold-500/15 to-amber-600/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-gold-600/10 rounded-full blur-[100px] pointer-events-none" />
-
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#F3F4F6] relative overflow-hidden font-sans">
       {/* Login Card */}
-      <div className="relative w-full max-w-md bg-[#111116] border border-gold-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl backdrop-blur-xl z-10">
+      <div className="relative w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 sm:p-10 shadow-sm z-10">
         {/* Festival Crest & Branding */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-300 via-gold-500 to-amber-700 flex items-center justify-center shadow-lg shadow-gold-500/20 mb-4 border border-gold-200/30">
-            <span className="font-serif text-3xl font-extrabold text-slate-950">F</span>
+          <div className="w-14 h-14 rounded-xl bg-[#1E3A5F] flex items-center justify-center shadow-none mb-4">
+            <span className="font-serif text-3xl font-extrabold text-white">F</span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-gold-400 text-xs font-semibold uppercase tracking-widest mb-1">
+          <div className="flex items-center gap-1.5 text-[#1E3A5F] text-xs font-semibold uppercase tracking-wider mb-1">
             <Sparkles className="w-3.5 h-3.5" />
             FLAVENCIA 2026
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
             Finance & Accounts
           </h2>
 
-          <p className="text-xs font-bold tracking-widest text-gold-400/90 uppercase mt-1">
+          <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mt-1">
             BEYOND BOUNDARIES
           </p>
 
-          <p className="text-xs text-slate-400 mt-2">
+          <p className="text-xs text-gray-500 mt-2">
             Secure Single Admin Authorization Portal
           </p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-6 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 flex-shrink-0" />
+          <div className="mb-6 p-3 rounded-lg bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] flex-shrink-0" />
             {error}
           </div>
         )}
@@ -68,12 +64,12 @@ export const LoginPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Username */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5">
               Admin Username
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <User className="w-4 h-4 text-gold-500" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <User className="w-4 h-4 text-[#1E3A5F]" />
               </div>
               <input
                 type="text"
@@ -81,19 +77,19 @@ export const LoginPage: React.FC = () => {
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 placeholder="Enter admin username"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#191921] border border-slate-700 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] placeholder-gray-400 text-sm focus:bg-white focus:outline-none focus:border-[#1E3A5F] transition-colors"
               />
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5">
               Password
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Lock className="w-4 h-4 text-gold-500" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <Lock className="w-4 h-4 text-[#1E3A5F]" />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -101,12 +97,12 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="w-full pl-10 pr-10 py-3 rounded-xl bg-[#191921] border border-slate-700 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                className="w-full pl-10 pr-10 py-2.5 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] placeholder-gray-400 text-sm focus:bg-white focus:outline-none focus:border-[#1E3A5F] transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(prev => !prev)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -117,10 +113,10 @@ export const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-gold-400 via-gold-500 to-amber-600 text-slate-950 hover:brightness-110 active:scale-[0.99] transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2 mt-2"
+            className="w-full py-3 px-4 rounded-lg font-semibold text-sm bg-[#1E3A5F] hover:bg-[#172E4D] text-white transition-all shadow-none flex items-center justify-center gap-2 mt-2"
           >
             {loading ? (
-              <span className="inline-block w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <ShieldCheck className="w-4 h-4" />
@@ -131,14 +127,14 @@ export const LoginPage: React.FC = () => {
         </form>
 
         {/* Demo Credentials Quick Fill Button */}
-        <div className="mt-8 pt-6 border-t border-slate-800/80 text-center">
-          <p className="text-xs text-slate-400 mb-2">First time logging in?</p>
+        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+          <p className="text-xs text-gray-500 mb-2">First time logging in?</p>
           <button
             type="button"
             onClick={handleFillDemo}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gold-500/10 text-gold-300 hover:bg-gold-500/20 border border-gold-500/20 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-navy-50 text-[#1E3A5F] hover:bg-navy-100 border border-navy-200 transition-all"
           >
-            <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+            <Sparkles className="w-3.5 h-3.5 text-[#1E3A5F]" />
             Fill Default Admin Credentials (`admin` / `flavencia2026`)
           </button>
         </div>

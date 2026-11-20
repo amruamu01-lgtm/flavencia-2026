@@ -8,12 +8,13 @@ import {
 } from '../types/financial';
 import { formatCurrency, formatDate } from '../utils/formatters';
 
-// Premium Color Palette for PDFs
-const COLOR_PRIMARY = [18, 18, 23]; // #121217 Deep Black
-const COLOR_GOLD = [197, 160, 89]; // #C5A059 Antique Gold
-const COLOR_LIGHT_GOLD = [241, 229, 172]; // #F1E5AC Champagne Gold
-const COLOR_SLATE = [71, 85, 105]; // #475569 Slate
-const COLOR_BG_LIGHT = [248, 250, 252]; // #F8FAFC
+// Clean Minimal Color Palette for PDFs
+const COLOR_PRIMARY = [30, 58, 95]; // #1E3A5F Navy Blue
+const COLOR_NAVY_ACCENT = [45, 85, 135]; // Lighter Navy Accent
+const COLOR_INCOME = [22, 163, 74]; // #16A34A Green
+const COLOR_EXPENSE = [220, 38, 38]; // #DC2626 Red
+const COLOR_SLATE = [55, 65, 81]; // #374151 Dark Grey
+const COLOR_BG_LIGHT = [243, 244, 246]; // #F3F4F6 Light Grey
 
 async function getPdfEngine() {
   const [jsPdfModule, autoTableModule] = await Promise.all([
@@ -37,8 +38,8 @@ export async function generateFinalSettlementPdf(data: FinalSettlementData): Pro
   doc.setFillColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
   doc.rect(0, 0, pageWidth, 42, 'F');
   
-  // Gold Accent Strip
-  doc.setFillColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  // Navy Accent Strip
+  doc.setFillColor(COLOR_NAVY_ACCENT[0], COLOR_NAVY_ACCENT[1], COLOR_NAVY_ACCENT[2]);
   doc.rect(0, 42, pageWidth, 2.5, 'F');
 
   // Title & Tagline
@@ -47,7 +48,7 @@ export async function generateFinalSettlementPdf(data: FinalSettlementData): Pro
   doc.setFontSize(22);
   doc.text('FLAVENCIA 2026', 14, 18);
   
-  doc.setTextColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setTextColor(COLOR_NAVY_ACCENT[0], COLOR_NAVY_ACCENT[1], COLOR_NAVY_ACCENT[2]);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.text('BEYOND BOUNDARIES', 14, 25);
@@ -232,7 +233,7 @@ export async function generateIncomeReportPdf(incomes: IncomeRecord[], title: st
 
   doc.setFillColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
   doc.rect(0, 0, pageWidth, 28, 'F');
-  doc.setFillColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setFillColor(COLOR_NAVY_ACCENT[0], COLOR_NAVY_ACCENT[1], COLOR_NAVY_ACCENT[2]);
   doc.rect(0, 28, pageWidth, 1.5, 'F');
 
   doc.setTextColor(255, 255, 255);
@@ -240,7 +241,7 @@ export async function generateIncomeReportPdf(incomes: IncomeRecord[], title: st
   doc.setFontSize(18);
   doc.text('FLAVENCIA 2026', 14, 14);
   doc.setFontSize(10);
-  doc.setTextColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setTextColor(220, 230, 242);
   doc.text(title.toUpperCase(), 14, 22);
 
   const total = incomes.reduce((s, i) => s + (Number(i.amount) || 0), 0);
@@ -283,7 +284,7 @@ export async function generateExpenseReportPdf(expenses: ExpenseRecord[], title:
 
   doc.setFillColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
   doc.rect(0, 0, pageWidth, 28, 'F');
-  doc.setFillColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setFillColor(COLOR_NAVY_ACCENT[0], COLOR_NAVY_ACCENT[1], COLOR_NAVY_ACCENT[2]);
   doc.rect(0, 28, pageWidth, 1.5, 'F');
 
   doc.setTextColor(255, 255, 255);
@@ -291,7 +292,7 @@ export async function generateExpenseReportPdf(expenses: ExpenseRecord[], title:
   doc.setFontSize(18);
   doc.text('FLAVENCIA 2026', 14, 14);
   doc.setFontSize(10);
-  doc.setTextColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setTextColor(220, 230, 242);
   doc.text(title.toUpperCase(), 14, 22);
 
   const totalBill = expenses.reduce((s, e) => s + (Number(e.totalAmount) || 0), 0);
@@ -341,7 +342,7 @@ export async function generateTransactionLedgerPdf(transactions: TransactionReco
 
   doc.setFillColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
   doc.rect(0, 0, pageWidth, 28, 'F');
-  doc.setFillColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setFillColor(COLOR_NAVY_ACCENT[0], COLOR_NAVY_ACCENT[1], COLOR_NAVY_ACCENT[2]);
   doc.rect(0, 28, pageWidth, 1.5, 'F');
 
   doc.setTextColor(255, 255, 255);
@@ -349,7 +350,7 @@ export async function generateTransactionLedgerPdf(transactions: TransactionReco
   doc.setFontSize(18);
   doc.text('FLAVENCIA 2026', 14, 14);
   doc.setFontSize(10);
-  doc.setTextColor(COLOR_GOLD[0], COLOR_GOLD[1], COLOR_GOLD[2]);
+  doc.setTextColor(220, 230, 242);
   doc.text(title.toUpperCase(), 14, 22);
 
   const rows = transactions.map(t => [

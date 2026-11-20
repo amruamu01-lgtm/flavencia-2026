@@ -111,7 +111,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
       maxWidth="lg"
     >
       {error && (
-        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+        <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium">
           {error}
         </div>
       )}
@@ -120,7 +120,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Date */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Expense Date *
             </label>
             <input
@@ -128,19 +128,19 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               required
               value={date}
               onChange={e => setDate(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Category *
             </label>
             <select
               value={categoryId}
               onChange={e => setCategoryId(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             >
               {expenseCategories.map(cat => (
                 <option key={cat.categoryId} value={cat.categoryId}>
@@ -154,7 +154,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
         {/* Item & Vendor */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Item / Purpose *
             </label>
             <input
@@ -163,12 +163,12 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               value={itemName}
               onChange={e => setItemName(e.target.value)}
               placeholder="e.g. Main Auditorium JBL Sound Rig"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Vendor / Paid To *
             </label>
             <input
@@ -177,7 +177,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               value={vendorName}
               onChange={e => setVendorName(e.target.value)}
               placeholder="e.g. Sonic Waves Sound Solutions"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
         </div>
@@ -185,7 +185,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
         {/* Amounts (Total & Paid) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Total Bill Amount (₹) *
             </label>
             <input
@@ -196,20 +196,20 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               value={totalAmount}
               onChange={e => setTotalAmount(e.target.value)}
               placeholder="10000"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 font-bold focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Actual Paid Amount (₹)
               </label>
               <div className="flex items-center gap-1.5 text-[10px]">
                 <button
                   type="button"
                   onClick={handlePayZero}
-                  className="text-amber-500 hover:underline font-semibold"
+                  className="text-[#DC2626] hover:underline font-semibold"
                 >
                   Pay ₹0 (Unpaid)
                 </button>
@@ -217,7 +217,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
                 <button
                   type="button"
                   onClick={handlePayFull}
-                  className="text-emerald-500 hover:underline font-semibold"
+                  className="text-[#16A34A] hover:underline font-semibold"
                 >
                   Pay Full
                 </button>
@@ -230,33 +230,33 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               value={paidAmount}
               onChange={e => setPaidAmount(e.target.value)}
               placeholder="0 (or partial amount)"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-bold text-rose-600 dark:text-rose-400"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-[#DC2626] font-bold focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
         </div>
 
         {/* Status & Balance Preview Box */}
-        <div className="p-3 rounded-xl bg-slate-100 dark:bg-[#171720] border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+        <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between text-xs">
           <div>
-            <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">
+            <span className="text-gray-500 block text-[10px] uppercase font-bold">
               Computed Status
             </span>
             <span className={`font-bold ${
               previewStatus === 'PAID'
-                ? 'text-emerald-600 dark:text-emerald-400'
+                ? 'text-[#16A34A]'
                 : previewStatus === 'PARTIALLY PAID'
-                ? 'text-amber-600 dark:text-amber-400'
-                : 'text-rose-600 dark:text-rose-400'
+                ? 'text-amber-600'
+                : 'text-[#DC2626]'
             }`}>
               {previewStatus}
             </span>
           </div>
 
           <div className="text-right">
-            <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">
+            <span className="text-gray-500 block text-[10px] uppercase font-bold">
               Outstanding Balance
             </span>
-            <span className="font-bold text-slate-900 dark:text-slate-100">
+            <span className="font-bold text-gray-900">
               {formatCurrency(previewBalance)}
             </span>
           </div>
@@ -264,15 +264,15 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
 
         {/* Account and Method (when paid > 0) */}
         {numPaid > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 rounded-xl bg-rose-500/5 border border-rose-500/20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 rounded-xl bg-gray-50 border border-gray-200">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
                 Disburse From Account *
               </label>
               <select
                 value={accountId}
                 onChange={e => setAccountId(e.target.value)}
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-semibold"
+                className="w-full text-xs px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-900 font-semibold focus:border-[#1E3A5F]"
               >
                 {accountList.map(acc => (
                   <option key={acc.accountId} value={acc.accountId}>
@@ -283,13 +283,13 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
                 Disbursement Method *
               </label>
               <select
                 value={paymentMethod}
                 onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+                className="w-full text-xs px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-900 focus:border-[#1E3A5F]"
               >
                 <option value="CASH">CASH</option>
                 <option value="BANK_TRANSFER">BANK TRANSFER (NEFT/RTGS/IMPS)</option>
@@ -304,7 +304,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
         {/* Paid By & Bill URL */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Paid By / Handler
             </label>
             <input
@@ -312,12 +312,12 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               value={paidBy}
               onChange={e => setPaidBy(e.target.value)}
               placeholder="e.g. General Secretary"
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
               Google Drive Bill URL
             </label>
             <input
@@ -325,14 +325,14 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
               value={billUrl}
               onChange={e => setBillUrl(e.target.value)}
               placeholder="https://drive.google.com/..."
-              className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
             />
           </div>
         </div>
 
         {/* Remarks */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
             Description & Notes
           </label>
           <textarea
@@ -340,23 +340,23 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
             value={remarks}
             onChange={e => setRemarks(e.target.value)}
             placeholder="Contract terms, quotation reference, invoice number..."
-            className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 resize-none"
+            className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F] resize-none"
           />
         </div>
 
         {/* Buttons */}
-        <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+        <div className="pt-3 flex items-center justify-end gap-3 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 via-rose-600 to-amber-700 text-white hover:brightness-110 shadow-md shadow-rose-500/20"
+            className="px-6 py-2.5 rounded-xl text-xs font-bold bg-[#1E3A5F] hover:bg-[#172E4D] text-white shadow-none transition-all"
           >
             {submitting ? 'Recording...' : 'Book Expense'}
           </button>

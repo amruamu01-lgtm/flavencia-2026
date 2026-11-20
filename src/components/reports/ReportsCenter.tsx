@@ -142,13 +142,13 @@ export const ReportsCenter: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             <span>Financial Reports Center</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20">
+            <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-navy-50 text-[#1E3A5F] border border-navy-200">
               14 Official Reports
             </span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-gray-500 mt-0.5">
             Audit-grade reporting engine with PDF, Excel, and Print exports
           </p>
         </div>
@@ -157,25 +157,25 @@ export const ReportsCenter: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={handleExportExcel}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#15151C] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1D1D26] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors"
           >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+            <FileSpreadsheet className="w-4 h-4 text-[#16A34A]" />
             Export Excel
           </button>
 
           <button
             onClick={handleExportPdf}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#15151C] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1D1D26] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors"
           >
-            <FileText className="w-4 h-4 text-gold-500" />
+            <FileText className="w-4 h-4 text-[#1E3A5F]" />
             Export PDF
           </button>
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#15151C] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1D1D26] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors"
           >
-            <Printer className="w-4 h-4 text-slate-400" />
+            <Printer className="w-4 h-4 text-gray-400" />
             Print
           </button>
         </div>
@@ -183,8 +183,8 @@ export const ReportsCenter: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left: Report Selector Catalog */}
-        <div className="p-3 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-1 max-h-[680px] overflow-y-auto">
-          <div className="text-[10px] uppercase font-bold text-slate-400 px-3 py-2">
+        <div className="p-3 rounded-xl bg-white border border-gray-200 shadow-none space-y-1 max-h-[680px] overflow-y-auto">
+          <div className="text-[10px] uppercase font-bold text-gray-500 px-3 py-2">
             Select Accounting Report
           </div>
           {REPORT_CATALOG.map(item => {
@@ -193,14 +193,14 @@ export const ReportsCenter: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveReport(item.id)}
-                className={`w-full text-left p-2.5 rounded-xl text-xs transition-all flex flex-col ${
+                className={`w-full text-left p-2.5 rounded-lg text-xs transition-all flex flex-col ${
                   isSelected
-                    ? 'bg-gold-500/15 text-gold-400 border border-gold-500/30 font-bold'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1A1A22]'
+                    ? 'bg-navy-50 text-[#1E3A5F] border border-navy-200 font-bold'
+                    : 'text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 <span className="truncate">{item.title}</span>
-                <span className="text-[10px] text-slate-400 font-normal truncate mt-0.5">
+                <span className="text-[10px] text-gray-400 font-normal truncate mt-0.5">
                   {item.description}
                 </span>
               </button>
@@ -209,22 +209,22 @@ export const ReportsCenter: React.FC = () => {
         </div>
 
         {/* Right: Active Report Interactive Preview */}
-        <div className="lg:col-span-3 p-6 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+        <div className="lg:col-span-3 p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-6">
           {/* Header of Preview */}
-          <div className="border-b border-slate-200 dark:border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="border-b border-gray-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-gold-400 block mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#1E3A5F] block mb-1">
                 FLAVENCIA 2026 • OFFICIAL STATEMENT
               </span>
-              <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-extrabold text-gray-900">
                 {currentMeta?.title}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-gray-500">
                 {currentMeta?.description}
               </p>
             </div>
             <div className="text-right">
-              <span className="text-xs font-mono text-slate-400">
+              <span className="text-xs font-mono text-gray-400">
                 Generated: {formatDate(new Date().toISOString().split('T')[0])}
               </span>
             </div>
@@ -234,27 +234,27 @@ export const ReportsCenter: React.FC = () => {
           {activeReport === 'COMPLETE_STATEMENT' && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase block font-semibold">Total Income</span>
-                  <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                <div className="p-4 rounded-xl bg-[#F3F4F6] border border-gray-200">
+                  <span className="text-[10px] text-gray-500 uppercase block font-semibold">Total Income</span>
+                  <span className="text-lg font-bold text-[#16A34A]">
                     {formatCurrency(finalSettlementData.grandTotalIncome)}
                   </span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase block font-semibold">Total Paid Expenses</span>
-                  <span className="text-lg font-bold text-rose-600 dark:text-rose-400">
+                <div className="p-4 rounded-xl bg-[#F3F4F6] border border-gray-200">
+                  <span className="text-[10px] text-gray-500 uppercase block font-semibold">Total Paid Expenses</span>
+                  <span className="text-lg font-bold text-[#DC2626]">
                     {formatCurrency(finalSettlementData.grandTotalPaidExpenses)}
                   </span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase block font-semibold">Net Liquid Surplus</span>
-                  <span className="text-lg font-bold text-gold-500">
+                <div className="p-4 rounded-xl bg-[#F3F4F6] border border-gray-200">
+                  <span className="text-[10px] text-gray-500 uppercase block font-semibold">Net Liquid Surplus</span>
+                  <span className="text-lg font-bold text-[#1E3A5F]">
                     {formatCurrency(finalSettlementData.netAvailableBalance)}
                   </span>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 uppercase block font-semibold">Outstanding Bills</span>
-                  <span className="text-lg font-bold text-amber-500">
+                <div className="p-4 rounded-xl bg-[#F3F4F6] border border-gray-200">
+                  <span className="text-[10px] text-gray-500 uppercase block font-semibold">Outstanding Bills</span>
+                  <span className="text-lg font-bold text-amber-700">
                     {formatCurrency(finalSettlementData.totalOutstandingAmount)}
                   </span>
                 </div>
@@ -262,26 +262,26 @@ export const ReportsCenter: React.FC = () => {
 
               {/* Accounts Position */}
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
                   Account-Wise Closing Liquid Balances
                 </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs text-left">
-                    <thead className="bg-slate-50 dark:bg-[#171720] border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
+                    <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-[10px]">
                       <tr>
                         <th className="py-2.5 px-3">Account Name</th>
                         <th className="py-2.5 px-3 text-right">Closing Balance</th>
                         <th className="py-2.5 px-3 text-center">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                    <tbody className="divide-y divide-gray-100">
                       {finalSettlementData.accountsBreakdown.map(acc => (
-                        <tr key={acc.accountName}>
-                          <td className="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200">{acc.accountName}</td>
-                          <td className="py-2.5 px-3 text-right font-bold text-slate-900 dark:text-slate-100">
+                        <tr key={acc.accountName} className="hover:bg-gray-50/50">
+                          <td className="py-2.5 px-3 font-semibold text-gray-800">{acc.accountName}</td>
+                          <td className="py-2.5 px-3 text-right font-bold text-gray-900">
                             {formatCurrency(acc.balance)}
                           </td>
-                          <td className="py-2.5 px-3 text-center text-[10px] text-emerald-500 font-semibold">
+                          <td className="py-2.5 px-3 text-center text-[10px] text-[#16A34A] font-semibold">
                             Reconciled
                           </td>
                         </tr>
@@ -296,7 +296,7 @@ export const ReportsCenter: React.FC = () => {
           {activeReport === 'TOTAL_INCOME' && (
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 dark:bg-[#171720] border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
+                <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-[10px]">
                   <tr>
                     <th className="py-2.5 px-3">Date</th>
                     <th className="py-2.5 px-3">Income ID</th>
@@ -305,14 +305,14 @@ export const ReportsCenter: React.FC = () => {
                     <th className="py-2.5 px-3 text-right">Amount (₹)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-gray-100">
                   {incomeList.map(i => (
-                    <tr key={i.incomeId}>
-                      <td className="py-2.5 px-3">{formatDate(i.date)}</td>
-                      <td className="py-2.5 px-3 font-mono text-[11px] text-slate-400">{i.incomeId}</td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200">{i.sourceName}</td>
-                      <td className="py-2.5 px-3 text-slate-500">{i.paymentMethod}</td>
-                      <td className="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                    <tr key={i.incomeId} className="hover:bg-gray-50/50">
+                      <td className="py-2.5 px-3 text-gray-700">{formatDate(i.date)}</td>
+                      <td className="py-2.5 px-3 font-mono text-[11px] text-gray-500">{i.incomeId}</td>
+                      <td className="py-2.5 px-3 font-semibold text-gray-800">{i.sourceName}</td>
+                      <td className="py-2.5 px-3 text-gray-500">{i.paymentMethod}</td>
+                      <td className="py-2.5 px-3 text-right font-bold text-[#16A34A]">
                         {formatCurrency(i.amount)}
                       </td>
                     </tr>
@@ -325,7 +325,7 @@ export const ReportsCenter: React.FC = () => {
           {activeReport === 'TOTAL_EXPENSES' && (
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 dark:bg-[#171720] border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
+                <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-[10px]">
                   <tr>
                     <th className="py-2.5 px-3">Date</th>
                     <th className="py-2.5 px-3">Item / Vendor</th>
@@ -335,19 +335,19 @@ export const ReportsCenter: React.FC = () => {
                     <th className="py-2.5 px-3 text-right">Balance</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-gray-100">
                   {expenseList.map(e => (
-                    <tr key={e.expenseId}>
-                      <td className="py-2.5 px-3">{formatDate(e.date)}</td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200">
+                    <tr key={e.expenseId} className="hover:bg-gray-50/50">
+                      <td className="py-2.5 px-3 text-gray-700">{formatDate(e.date)}</td>
+                      <td className="py-2.5 px-3 font-semibold text-gray-800">
                         {e.itemName} ({e.vendorName})
                       </td>
-                      <td className="py-2.5 px-3 font-bold text-[10px]">{e.paymentStatus}</td>
-                      <td className="py-2.5 px-3 text-right">{formatCurrency(e.totalAmount)}</td>
-                      <td className="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="py-2.5 px-3 font-bold text-[10px] text-gray-700">{e.paymentStatus}</td>
+                      <td className="py-2.5 px-3 text-right text-gray-900">{formatCurrency(e.totalAmount)}</td>
+                      <td className="py-2.5 px-3 text-right font-bold text-[#16A34A]">
                         {formatCurrency(e.paidAmount)}
                       </td>
-                      <td className="py-2.5 px-3 text-right font-bold text-amber-500">
+                      <td className="py-2.5 px-3 text-right font-bold text-amber-700">
                         {formatCurrency(e.balanceAmount)}
                       </td>
                     </tr>
@@ -360,7 +360,7 @@ export const ReportsCenter: React.FC = () => {
           {(activeReport === 'OUTSTANDING_EXPENSES' || activeReport === 'UNPAID_EXPENSES' || activeReport === 'PARTIALLY_PAID') && (
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 dark:bg-[#171720] border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
+                <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-[10px]">
                   <tr>
                     <th className="py-2.5 px-3">Expense ID</th>
                     <th className="py-2.5 px-3">Vendor / Item</th>
@@ -370,7 +370,7 @@ export const ReportsCenter: React.FC = () => {
                     <th className="py-2.5 px-3 text-right">Pending Amount</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-gray-100">
                   {expenseList
                     .filter(e => {
                       if (activeReport === 'UNPAID_EXPENSES') return e.paymentStatus === 'UNPAID';
@@ -378,15 +378,15 @@ export const ReportsCenter: React.FC = () => {
                       return e.balanceAmount > 0;
                     })
                     .map(e => (
-                      <tr key={e.expenseId}>
-                        <td className="py-2.5 px-3 font-mono text-[11px] text-slate-400">{e.expenseId}</td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200">
+                      <tr key={e.expenseId} className="hover:bg-gray-50/50">
+                        <td className="py-2.5 px-3 font-mono text-[11px] text-gray-500">{e.expenseId}</td>
+                        <td className="py-2.5 px-3 font-semibold text-gray-800">
                           {e.itemName} ({e.vendorName})
                         </td>
-                        <td className="py-2.5 px-3 font-bold text-[10px] text-amber-500">{e.paymentStatus}</td>
-                        <td className="py-2.5 px-3 text-right">{formatCurrency(e.totalAmount)}</td>
-                        <td className="py-2.5 px-3 text-right text-emerald-500 font-semibold">{formatCurrency(e.paidAmount)}</td>
-                        <td className="py-2.5 px-3 text-right font-bold text-rose-500">{formatCurrency(e.balanceAmount)}</td>
+                        <td className="py-2.5 px-3 font-bold text-[10px] text-amber-700">{e.paymentStatus}</td>
+                        <td className="py-2.5 px-3 text-right text-gray-900">{formatCurrency(e.totalAmount)}</td>
+                        <td className="py-2.5 px-3 text-right text-[#16A34A] font-semibold">{formatCurrency(e.paidAmount)}</td>
+                        <td className="py-2.5 px-3 text-right font-bold text-[#DC2626]">{formatCurrency(e.balanceAmount)}</td>
                       </tr>
                     ))}
                 </tbody>
@@ -397,7 +397,7 @@ export const ReportsCenter: React.FC = () => {
           {activeReport === 'BUDGET_UTILIZATION' && (
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
-                <thead className="bg-slate-50 dark:bg-[#171720] border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
+                <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-[10px]">
                   <tr>
                     <th className="py-2.5 px-3">Category</th>
                     <th className="py-2.5 px-3 text-right">Budget Limit (₹)</th>
@@ -406,26 +406,26 @@ export const ReportsCenter: React.FC = () => {
                     <th className="py-2.5 px-3 text-center">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-gray-100">
                   {budgetList.map(b => {
                     const cat = categoryList.find(c => c.categoryId === b.categoryId);
                     const spent = expenseList
-                      .filter(e => e.categoryId === b.categoryId)
-                      .reduce((s, e) => s + (Number(e.paidAmount) || 0), 0);
+                        .filter(e => e.categoryId === b.categoryId)
+                        .reduce((s, e) => s + (Number(e.paidAmount) || 0), 0);
                     const remaining = b.budgetAmount - spent;
                     const isExceeded = remaining < 0;
 
                     return (
-                      <tr key={b.budgetId}>
-                        <td className="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200">
+                      <tr key={b.budgetId} className="hover:bg-gray-50/50">
+                        <td className="py-2.5 px-3 font-semibold text-gray-800">
                           {cat ? cat.categoryName : b.categoryId}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-semibold">{formatCurrency(b.budgetAmount)}</td>
-                        <td className="py-2.5 px-3 text-right font-bold text-rose-500">{formatCurrency(spent)}</td>
-                        <td className={`py-2.5 px-3 text-right font-bold ${isExceeded ? 'text-red-500' : 'text-emerald-500'}`}>
+                        <td className="py-2.5 px-3 text-right font-semibold text-gray-900">{formatCurrency(b.budgetAmount)}</td>
+                        <td className="py-2.5 px-3 text-right font-bold text-[#DC2626]">{formatCurrency(spent)}</td>
+                        <td className={`py-2.5 px-3 text-right font-bold ${isExceeded ? 'text-[#DC2626]' : 'text-[#16A34A]'}`}>
                           {isExceeded ? `-${formatCurrency(Math.abs(remaining))}` : formatCurrency(remaining)}
                         </td>
-                        <td className="py-2.5 px-3 text-center text-[10px] font-bold">
+                        <td className="py-2.5 px-3 text-center text-[10px] font-bold text-gray-700">
                           {isExceeded ? 'EXCEEDED' : spent / b.budgetAmount >= 0.8 ? 'WARNING' : 'OK'}
                         </td>
                       </tr>

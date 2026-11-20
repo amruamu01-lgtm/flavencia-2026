@@ -135,37 +135,37 @@ export const SettingsView: React.FC = () => {
     <div className="space-y-8 max-w-4xl">
       {/* Top Header */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Sliders className="w-5 h-5 text-gold-500" />
+        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <Sliders className="w-5 h-5 text-[#1E3A5F]" />
           <span>System & Database Configuration</span>
         </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-gray-500 mt-0.5">
           Master integration settings, security credentials, and festival metadata
         </p>
       </div>
 
       {/* 1. Google Sheets & Apps Script Integration */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Database className="w-4 h-4 text-emerald-500" />
+            <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <Database className="w-4 h-4 text-[#16A34A]" />
               Google Sheets Master Database & Apps Script API
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-gray-500 mt-0.5">
               Connect the web app directly to your Google Spreadsheet and Google Drive
             </p>
           </div>
           <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
               isBackendConnected
-                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                : 'bg-gold-500/10 text-gold-500 border border-gold-500/20'
+                ? 'bg-emerald-50 text-[#16A34A] border border-emerald-200'
+                : 'bg-navy-50 text-[#1E3A5F] border border-navy-200'
             }`}
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                isBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gold-400'
+                isBackendConnected ? 'bg-[#16A34A] animate-pulse' : 'bg-[#1E3A5F]'
               }`}
             />
             {isBackendConnected ? 'Live Google Sheets' : 'Local Offline Engine'}
@@ -174,10 +174,10 @@ export const SettingsView: React.FC = () => {
 
         {testResult && (
           <div
-            className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+            className={`p-3 rounded-lg text-xs font-medium flex items-center gap-2 ${
               testResult.success
-                ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-                : 'bg-rose-500/10 border border-rose-500/30 text-rose-400'
+                ? 'bg-emerald-50 border border-emerald-200 text-[#16A34A]'
+                : 'bg-rose-50 border border-rose-200 text-[#DC2626]'
             }`}
           >
             {testResult.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
@@ -187,7 +187,7 @@ export const SettingsView: React.FC = () => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
               Google Apps Script Web App URL (/exec) *
             </label>
             <input
@@ -195,17 +195,17 @@ export const SettingsView: React.FC = () => {
               value={gasUrl}
               onChange={e => setGasUrl(e.target.value)}
               placeholder="https://script.google.com/macros/s/AKfycb.../exec"
-              className="w-full text-xs px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono"
+              className="w-full text-xs px-3 py-2.5 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
             />
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-gray-400 mt-1">
               Deploy your Apps Script as Web App with Access: "Anyone". See deployment guide in{' '}
-              <code className="text-gold-400">google-apps-script/DEPLOYMENT_INSTRUCTIONS.md</code>.
+              <code className="text-[#1E3A5F] font-mono font-semibold">google-apps-script/DEPLOYMENT_INSTRUCTIONS.md</code>.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
                 Google Spreadsheet ID
               </label>
               <input
@@ -213,12 +213,12 @@ export const SettingsView: React.FC = () => {
                 value={sheetId}
                 onChange={e => setSheetId(e.target.value)}
                 placeholder="e.g. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono"
+                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
                 Google Drive Root Folder ID
               </label>
               <input
@@ -226,19 +226,19 @@ export const SettingsView: React.FC = () => {
                 value={driveId}
                 onChange={e => setDriveId(e.target.value)}
                 placeholder="e.g. 1a2b3c4d5e6f7g8h9"
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 font-mono"
+                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] font-mono focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
               />
             </div>
           </div>
 
-          <div className="pt-2 flex items-center justify-between">
-            <span className="text-xs text-slate-400">
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span className="text-xs text-gray-500">
               Works seamlessly in both connected Google Sheets mode and local simulated ledger mode.
             </span>
             <button
               onClick={handleSaveIntegration}
               disabled={isTesting}
-              className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gold-500 hover:bg-gold-600 text-slate-950 flex items-center gap-2 shadow-sm transition-all"
+              className="px-5 py-2.5 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white flex items-center gap-2 shadow-none transition-all self-start sm:self-auto"
             >
               {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
               Save & Test Connection
@@ -248,23 +248,23 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* 2. Admin Security & Password Change */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-5">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <KeyRound className="w-4 h-4 text-gold-500" />
+          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+            <KeyRound className="w-4 h-4 text-[#1E3A5F]" />
             Admin Security & Password Management
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Single Admin account: <strong className="text-slate-200">{adminUsername}</strong>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Single Admin account: <strong className="text-gray-900">{adminUsername}</strong>
           </p>
         </div>
 
         {passMessage && (
           <div
-            className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+            className={`p-3 rounded-lg text-xs font-medium flex items-center gap-2 ${
               passMessage.success
-                ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-                : 'bg-rose-500/10 border border-rose-500/30 text-rose-400'
+                ? 'bg-emerald-50 border border-emerald-200 text-[#16A34A]'
+                : 'bg-rose-50 border border-rose-200 text-[#DC2626]'
             }`}
           >
             {passMessage.success ? <CheckCircle2 className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
@@ -275,7 +275,7 @@ export const SettingsView: React.FC = () => {
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
                 Current Password *
               </label>
               <input
@@ -284,12 +284,12 @@ export const SettingsView: React.FC = () => {
                 value={currentPass}
                 onChange={e => setCurrentPass(e.target.value)}
                 placeholder="Current password"
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
                 New Password *
               </label>
               <input
@@ -298,12 +298,12 @@ export const SettingsView: React.FC = () => {
                 value={newPass}
                 onChange={e => setNewPass(e.target.value)}
                 placeholder="At least 6 characters"
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
                 Confirm New Password *
               </label>
               <input
@@ -312,7 +312,7 @@ export const SettingsView: React.FC = () => {
                 value={confirmPass}
                 onChange={e => setConfirmPass(e.target.value)}
                 placeholder="Re-enter new password"
-                className="w-full text-xs px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#1A1A22] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
+                className="w-full text-xs px-3 py-2 rounded-lg bg-[#F3F4F6] border border-gray-200 text-[#374151] focus:bg-white focus:outline-none focus:border-[#1E3A5F]"
               />
             </div>
           </div>
@@ -320,7 +320,7 @@ export const SettingsView: React.FC = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 transition-colors"
+              className="px-5 py-2 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white transition-colors"
             >
               Update Password
             </button>
@@ -329,39 +329,39 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* 3. Festival Details & UI Preferences */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-gold-500" />
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
+        <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[#1E3A5F]" />
           Festival Branding & Preferences
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-100 dark:border-slate-800">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Festival Name</span>
-            <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">FLAVENCIA 2026</span>
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Festival Name</span>
+            <span className="font-bold text-gray-900 text-sm">FLAVENCIA 2026</span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-100 dark:border-slate-800">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Official Tagline</span>
-            <span className="font-bold text-gold-400 text-sm">BEYOND BOUNDARIES</span>
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Official Tagline</span>
+            <span className="font-bold text-[#1E3A5F] text-sm">BEYOND BOUNDARIES</span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-100 dark:border-slate-800">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Base Currency</span>
-            <span className="font-bold text-slate-900 dark:text-slate-100">INR (₹ Indian Rupee)</span>
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Base Currency</span>
+            <span className="font-bold text-gray-900">INR (₹ Indian Rupee)</span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#181820] border border-slate-100 dark:border-slate-800">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Official Timezone</span>
-            <span className="font-bold text-slate-900 dark:text-slate-100">Asia/Kolkata (IST, UTC+05:30)</span>
+          <div className="p-3 rounded-lg bg-[#F3F4F6] border border-gray-100">
+            <span className="text-gray-400 block text-[10px] uppercase font-bold">Official Timezone</span>
+            <span className="font-bold text-gray-900">Asia/Kolkata (IST, UTC+05:30)</span>
           </div>
         </div>
 
         <div className="pt-2 flex items-center justify-between">
-          <span className="text-xs text-slate-400">Application Visual Theme Mode</span>
+          <span className="text-xs text-gray-500">Application Visual Theme Mode</span>
           <button
             onClick={toggleTheme}
-            className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            className="px-4 py-2 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors"
           >
             Current Theme: {theme.toUpperCase()}
           </button>
@@ -369,13 +369,13 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* 4. Data Safety & Master Backup */}
-      <div className="p-6 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+      <div className="p-6 rounded-xl bg-white border border-gray-200 shadow-none space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <FolderOpen className="w-4 h-4 text-gold-500" />
+          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+            <FolderOpen className="w-4 h-4 text-[#1E3A5F]" />
             Data Safety, Master Backup & Recovery
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-gray-500 mt-0.5">
             Download JSON backups of the complete database tabs or restore from existing backups
           </p>
         </div>
@@ -383,13 +383,13 @@ export const SettingsView: React.FC = () => {
         <div className="flex flex-wrap gap-3 pt-2">
           <button
             onClick={handleExportBackup}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gold-500 hover:bg-gold-600 text-slate-950 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold bg-[#1E3A5F] hover:bg-[#172E4D] text-white transition-colors shadow-none"
           >
             <Download className="w-4 h-4" />
             Download Complete Master JSON Backup
           </button>
 
-          <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 transition-colors cursor-pointer">
+          <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-[#374151] hover:bg-gray-50 transition-colors cursor-pointer">
             <Upload className="w-4 h-4" />
             Restore from JSON Backup File
             <input type="file" accept=".json" onChange={handleRestoreBackup} className="hidden" />

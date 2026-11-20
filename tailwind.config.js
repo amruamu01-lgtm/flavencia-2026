@@ -8,24 +8,53 @@ export default {
   theme: {
     extend: {
       colors: {
+        navy: {
+          50: '#F0F4F8',
+          100: '#D9E2EC',
+          200: '#BCCCDC',
+          300: '#9FB3C8',
+          400: '#486581',
+          500: '#1E3A5F',
+          600: '#172E4D',
+          700: '#10223A',
+          800: '#0B1728',
+          900: '#060D17',
+          DEFAULT: '#1E3A5F',
+        },
+        income: {
+          light: '#DCFCE7',
+          DEFAULT: '#16A34A',
+          dark: '#15803D',
+        },
+        expense: {
+          light: '#FEE2E2',
+          DEFAULT: '#DC2626',
+          dark: '#B91C1C',
+        },
+        apptext: {
+          DEFAULT: '#374151',
+          muted: '#6B7280',
+          dark: '#1F2937',
+        },
+        // Kept for backward compatibility mapping
         gold: {
-          50: '#FDFBF7',
-          100: '#F9F5EC',
-          200: '#F1E5AC',
-          300: '#E5C158',
-          400: '#D4AF37',
-          500: '#C5A059',
-          600: '#A68238',
-          700: '#7E6023',
-          800: '#543F14',
-          900: '#2E2207',
+          50: '#F0F4F8',
+          100: '#E2E8F0',
+          200: '#CBD5E1',
+          300: '#94A3B8',
+          400: '#1E3A5F',
+          500: '#1E3A5F',
+          600: '#172E4D',
+          700: '#10223A',
+          800: '#0B1728',
+          900: '#060D17',
         },
         dark: {
-          base: '#0B0B0E',
-          card: '#131318',
-          cardHover: '#1A1A22',
-          border: '#262633',
-          muted: '#8E8E9F',
+          base: '#FFFFFF',
+          card: '#FFFFFF',
+          cardHover: '#F9FAFB',
+          border: '#E5E7EB',
+          muted: '#6B7280',
         }
       },
       fontFamily: {
