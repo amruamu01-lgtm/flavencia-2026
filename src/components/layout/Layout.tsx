@@ -1,0 +1,61 @@
+import React, { useState } from 'react';
+import { Sidebar, NavigationTab } from './Sidebar';
+import { Navbar } from './Navbar';
+
+interface LayoutProps {
+  activeTab: NavigationTab;
+  onSelectTab: (tab: NavigationTab) => void;
+  children: React.ReactNode;
+}
+
+const TAB_TITLES: Record<NavigationTab, string> = {
+  dashboard: 'Executive Dashboard',
+  income: 'Income Management',
+  expenses: 'Expense Management',
+  payments: 'Payment Management',
+  accounts: 'Cash & Bank Management',
+  transactions: 'Transaction History',
+  budgets: 'Budget Management',
+  reports: 'Financial Reports Center',
+  settlement: 'Festival Final Settlement',
+  categories: 'Category Management',
+  audit: 'Audit Logs & Activity History',
+  settings: 'System & Database Settings'
+};
+
+export const Layout: React.FC<LayoutProps> = ({ activeTab, onSelectTab, children }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [isOpenMobile, setIsOpenMobile] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-[#09090C] text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+      {/* Sidebar */}
+      <Sidebar
+        activeTab={activeTab}
+        onSelectTab={onSelectTab}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(prev => !prev)}
+        isOpenMobile={isOpenMobile}
+        onCloseMobile={() => setIsOpenMobile(false)}
+      />
+
+      {/* Main Content Area */}
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
+          collapsed ? 'lg:pl-20' : 'lg:pl-64'
+        }`}
+      >
+        {/* Top Navbar */}
+        <Navbar
+          onToggleSidebar={() => setIsOpenMobile(prev => !prev)}
+          activeTabTitle={TAB_TITLES[activeTab] || 'FLAVENCIA 2026'}
+        />
+
+        {/* View Port */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};

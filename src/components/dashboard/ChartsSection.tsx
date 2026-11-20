@@ -1,0 +1,252 @@
+import React from 'react';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  CartesianGrid
+} from 'recharts';
+import { useFinance } from '../../context/FinanceContext';
+import { formatCurrency, formatDate } from '../../utils/formatters';
+
+const GOLD_PALETTE = ['#C5A059', '#D4AF37', '#E5C158', '#997328', '#634A19', '#E2D3A1'];
+const EXPENSE_PALETTE = ['#E11D48', '#BE123C', '#9F1239', '#F43F5E', '#FB7185', '#FDA4AF'];
+
+export const ChartsSection: React.FC = () => {
+  const {
+    filteredIncome,
+    filteredExpenses,
+    accountList,
+    categoryList,
+    budgetList
+  } = useFinance();
+
+  // 1. Prepare Daily Activity Timeline Data
+  const dailyDataMap: { [date: string]: { date: string; income: number; expense: number } } = {};
+  filteredIncome.forEach(i => {
+    if (!dailyDataMap[i.date]) dailyDataMap[i.date] = { date: i.date, income: 0, expense: 0 };
+    dailyDataMap[i.date].income += Number(i.amount) || 0;
+  });
+  filteredExpenses.forEach(e => {
+    if (!dailyDataMap[e.date]) dailyDataMap[e.date] = { date: e.date, income: 0, expense: 0 };
+    dailyDataMap[e.date].expense += Number(e.paidAmount) || 0;
+  });
+  const timelineData = Object.values(dailyDataMap).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  // 2. Prepare Category-wise Expense Data (Pie Chart)
+  const catExpenseMap: { [catId: string]: number } = {};
+  filteredExpenses.forEach(e => {
+    catExpenseMap[e.categoryId] = (catExpenseMap[e.categoryId] || 0) + (Number(e.paidAmount) || 0);
+  });
+  const categoryExpenseData = Object.entries(catExpenseMap).map(([catId, amount]) => {
+    const cat = categoryList.find(c => c.categoryId === catId);
+    return {
+      name: cat ? cat.categoryName : catId,
+      value: amount
+    };
+  }).filter(c => c.value > 0);
+
+  // 3. Accounts Distribution Data
+  const accountsData = accountList.map(a => ({
+    name: a.accountName,
+    balance: a.currentBalance || 0
+  }));
+
+  // 4. Budget Utilization Data
+  const budgetUtilizationData = budgetList.map(b => {
+    const cat = categoryList.find(c => c.categoryId === b.categoryId);
+    const spent = filteredExpenses
+      .filter(e => e.categoryId === b.categoryId)
+      .reduce((sum, e) => sum + (Number(e.paidAmount) || 0), 0);
+    return {
+      name: cat ? cat.categoryName : b.categoryId,
+      Budget: b.budgetAmount,
+      Spent: spent,
+      Remaining: Math.max(0, b.budgetAmount - spent)
+    };
+  });
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* 1. Daily Financial Activity (Income vs Expenses) */}
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Daily Financial Velocity
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Income receipts vs Actual paid disbursements
+            </p>
+          </div>
+        </div>
+
+        <div className="h-64 w-full">
+          {timelineData.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-xs text-slate-400">
+              No transactions recorded in this date range.
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={timelineData}>
+                <defs>
+                  <linearGradient id="incomeGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#C5A059" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#C5A059" stopOpacity={0.0} />
+                  </linearGradient>
+                  <linearGradient id="expenseGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#E11D48" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#E11D48" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#262633" opacity={0.3} />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={formatDate}
+                  tick={{ fontSize: 10, fill: '#8E8E9F' }}
+                />
+                <YAxis
+                  tickFormatter={val => `₹${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
+                  tick={{ fontSize: 10, fill: '#8E8E9F' }}
+                />
+                <Tooltip
+                  formatter={(val: any) => [formatCurrency(Number(val)), '']}
+                  labelFormatter={formatDate}
+                  contentStyle={{ backgroundColor: '#1A1A22', borderColor: '#C5A059', borderRadius: '8px', fontSize: '11px' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                <Area type="monotone" dataKey="income" name="Income (₹)" stroke="#C5A059" fillOpacity={1} fill="url(#incomeGrad)" strokeWidth={2} />
+                <Area type="monotone" dataKey="expense" name="Paid Expenses (₹)" stroke="#E11D48" fillOpacity={1} fill="url(#expenseGrad)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* 2. Category-Wise Expense Distribution */}
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Expense Allocation by Category
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Actual paid amounts breakdown
+            </p>
+          </div>
+        </div>
+
+        <div className="h-64 w-full">
+          {categoryExpenseData.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-xs text-slate-400">
+              No expense disbursements recorded yet.
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={categoryExpenseData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={85}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  {categoryExpenseData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={EXPENSE_PALETTE[index % EXPENSE_PALETTE.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(val: any) => [formatCurrency(Number(val)), 'Paid Amount']}
+                  contentStyle={{ backgroundColor: '#1A1A22', borderColor: '#E11D48', borderRadius: '8px', fontSize: '11px' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '10px', maxHeight: '60px', overflowY: 'auto' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Account Balances Overview */}
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Liquid Account Reserves
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Current closing balance across Cash, Bank & UPI
+            </p>
+          </div>
+        </div>
+
+        <div className="h-64 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={accountsData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#262633" opacity={0.3} />
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#8E8E9F' }} />
+              <YAxis
+                tickFormatter={val => `₹${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
+                tick={{ fontSize: 10, fill: '#8E8E9F' }}
+              />
+              <Tooltip
+                formatter={(val: any) => [formatCurrency(Number(val)), 'Current Balance']}
+                contentStyle={{ backgroundColor: '#1A1A22', borderColor: '#C5A059', borderRadius: '8px', fontSize: '11px' }}
+              />
+              <Bar dataKey="balance" name="Current Balance (₹)" fill="#C5A059" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* 4. Budget vs Actual Utilization */}
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Budget Target vs Actual Spend
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Allocated ceiling vs actual paid disbursements
+            </p>
+          </div>
+        </div>
+
+        <div className="h-64 w-full">
+          {budgetUtilizationData.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-xs text-slate-400">
+              No budgets defined yet. Set category budgets in Budget Management.
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={budgetUtilizationData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#262633" opacity={0.3} />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#8E8E9F' }} />
+                <YAxis
+                  tickFormatter={val => `₹${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
+                  tick={{ fontSize: 10, fill: '#8E8E9F' }}
+                />
+                <Tooltip
+                  formatter={(val: any) => [formatCurrency(Number(val)), '']}
+                  contentStyle={{ backgroundColor: '#1A1A22', borderColor: '#C5A059', borderRadius: '8px', fontSize: '11px' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '11px' }} />
+                <Bar dataKey="Budget" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Spent" fill="#E11D48" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
