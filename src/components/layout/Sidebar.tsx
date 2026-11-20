@@ -3,18 +3,14 @@ import {
   LayoutDashboard,
   ArrowDownLeft,
   ArrowUpRight,
-  CreditCard,
   Landmark,
   ReceiptText,
-  PieChart,
   FileSpreadsheet,
-  FolderKanban,
   Sliders,
   ChevronLeft,
   ChevronRight,
   Award,
   Sparkles,
-  Layers,
   History
 } from 'lucide-react';
 
@@ -22,13 +18,10 @@ export type NavigationTab =
   | 'dashboard'
   | 'income'
   | 'expenses'
-  | 'payments'
   | 'accounts'
   | 'transactions'
-  | 'budgets'
   | 'reports'
   | 'settlement'
-  | 'categories'
   | 'audit'
   | 'settings';
 
@@ -49,17 +42,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isOpenMobile,
   onCloseMobile
 }) => {
-  const menuItems = [
+  const menuItems: { id: NavigationTab; label: string; icon: any; highlight?: boolean }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'income', label: 'Income Management', icon: ArrowDownLeft },
     { id: 'expenses', label: 'Expense Management', icon: ArrowUpRight },
-    { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'accounts', label: 'Cash & Bank Accounts', icon: Landmark },
     { id: 'transactions', label: 'Transactions', icon: ReceiptText },
-    { id: 'budgets', label: 'Budget Management', icon: PieChart },
     { id: 'reports', label: 'Financial Reports', icon: FileSpreadsheet },
     { id: 'settlement', label: 'Final Settlement', icon: Award, highlight: true },
-    { id: 'categories', label: 'Categories', icon: FolderKanban },
     { id: 'audit', label: 'Audit Logs', icon: History },
     { id: 'settings', label: 'Settings', icon: Sliders },
   ];

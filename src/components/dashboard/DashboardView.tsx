@@ -1,23 +1,15 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import {
   TrendingUp,
   TrendingDown,
   ArrowRightLeft,
-  Award,
-  Plus,
-  Sparkles
+  Award
 } from 'lucide-react';
 import { FinancialSummaryCards } from './FinancialSummaryCards';
-import { RecentTransactionsTable } from './RecentTransactionsTable';
 import { AddIncomeModal } from '../income/AddIncomeModal';
 import { AddExpenseModal } from '../expenses/AddExpenseModal';
 import { TransferModal } from '../accounts/TransferModal';
 import { NavigationTab } from '../layout/Sidebar';
-
-// Lazy-load ChartsSection to isolate Recharts from initial load
-const ChartsSection = React.lazy(() =>
-  import('./ChartsSection').then(m => ({ default: m.ChartsSection }))
-);
 
 interface DashboardViewProps {
   onNavigate: (tab: NavigationTab) => void;
@@ -29,7 +21,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
   const [isTransferOpen, setIsTransferOpen] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Quick Action Ribbon */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-white border border-gray-200 shadow-none">
         <div className="flex items-center gap-2">
@@ -76,31 +68,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
 
       {/* Financial Summary Cards */}
       <FinancialSummaryCards />
-
-      {/* Analytics Charts with Lazy Suspense Fallback */}
-      <Suspense
-        fallback={
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
-            <div className="h-72 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-xs text-gray-500">
-              <span className="flex items-center gap-2">
-                <span className="w-3 h-3 border-2 border-[#1E3A5F] border-t-transparent rounded-full animate-spin" />
-                Loading Financial Velocity Charts...
-              </span>
-            </div>
-            <div className="h-72 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-xs text-gray-500">
-              <span className="flex items-center gap-2">
-                <span className="w-3 h-3 border-2 border-[#DC2626] border-t-transparent rounded-full animate-spin" />
-                Loading Expense Allocation Charts...
-              </span>
-            </div>
-          </div>
-        }
-      >
-        <ChartsSection />
-      </Suspense>
-
-      {/* Recent Ledger Transactions */}
-      <RecentTransactionsTable onViewAll={() => onNavigate('transactions')} />
 
       {/* Modals */}
       <AddIncomeModal isOpen={isAddIncomeOpen} onClose={() => setIsAddIncomeOpen(false)} />

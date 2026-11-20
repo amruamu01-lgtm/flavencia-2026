@@ -7,11 +7,7 @@ import {
   Smartphone,
   AlertCircle,
   Receipt,
-  Scale,
-  Calendar,
-  Gift,
-  Award,
-  Layers
+  Scale
 } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { StatCard } from '../common/StatCard';
@@ -109,72 +105,6 @@ export const FinancialSummaryCards: React.FC = () => {
           icon={Receipt}
           variant="slate"
         />
-      </div>
-
-      {/* 8 Additional Statistics Row */}
-      <div className="p-4 rounded-xl bg-white border border-gray-200">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5 text-[#1E3A5F]" />
-          Period Statistics & Breakdown Highlights
-        </h3>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 text-center">
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">Today's Income</span>
-            <span className="text-sm font-bold text-[#16A34A]">
-              {formatCurrency(dashboardStats.todayIncome)}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">Today's Expenses</span>
-            <span className="text-sm font-bold text-[#DC2626]">
-              {formatCurrency(dashboardStats.todayExpenses)}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">This Month Income</span>
-            <span className="text-sm font-bold text-[#16A34A]">
-              {formatCurrency(dashboardStats.thisMonthIncome)}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">This Month Exp.</span>
-            <span className="text-sm font-bold text-[#DC2626]">
-              {formatCurrency(dashboardStats.thisMonthExpenses)}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">Total Donations</span>
-            <span className="text-sm font-bold text-[#16A34A]">
-              {formatCurrency(dashboardStats.totalDonations)}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">Sponsorships</span>
-            <span className="text-sm font-bold text-[#16A34A]">
-              {formatCurrency(dashboardStats.totalSponsorships)}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100 col-span-2 sm:col-span-1">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">Highest Exp. Cat</span>
-            <span className="text-xs font-bold text-gray-800 truncate block" title={dashboardStats.highestExpenseCategory?.name || 'None'}>
-              {dashboardStats.highestExpenseCategory?.name || 'None'}
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-100 col-span-2 sm:col-span-1">
-            <span className="text-[10px] text-gray-500 block uppercase font-medium">Unpaid Bills Count</span>
-            <span className="text-sm font-bold text-[#DC2626]">
-              {dashboardStats.totalUnpaidExpensesCount}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

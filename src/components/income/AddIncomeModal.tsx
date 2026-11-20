@@ -3,6 +3,7 @@ import { useFinance } from '../../context/FinanceContext';
 import { Modal } from '../common/Modal';
 import { PaymentMethod } from '../../types/financial';
 import { getTodayDateString } from '../../utils/formatters';
+import { CategoryManagementModal } from '../categories/CategoryManagementModal';
 
 interface AddIncomeModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
   const [receiptUrl, setReceiptUrl] = useState('');
   const [remarks, setRemarks] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isManageCatOpen, setIsManageCatOpen] = useState(false);
 
   React.useEffect(() => {
     if (incomeCategories.length > 0 && !incomeCategories.some(c => c.categoryId === categoryId)) {
@@ -80,8 +82,9 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
+    <>
+      <Modal
+        isOpen={isOpen}
       onClose={onClose}
       title="Record Festival Income"
       subtitle="Direct credit entry to master spreadsheet & ledger"
@@ -111,9 +114,18 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
-              Category *
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Category *
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsManageCatOpen(true)}
+                className="text-[11px] font-semibold text-[#1E3A5F] hover:underline"
+              >
+                + Categories
+              </button>
+            </div>
             <select
               value={categoryId}
               onChange={e => setCategoryId(e.target.value)}
@@ -288,5 +300,12 @@ export const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose 
         </div>
       </form>
     </Modal>
+
+    <CategoryManagementModal
+      isOpen={isManageCatOpen}
+      onClose={() => setIsManageCatOpen(false)}
+      categoryType="INCOME"
+    />
+  </>
   );
 };

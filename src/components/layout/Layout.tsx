@@ -12,13 +12,10 @@ const TAB_TITLES: Record<NavigationTab, string> = {
   dashboard: 'Executive Dashboard',
   income: 'Income Management',
   expenses: 'Expense Management',
-  payments: 'Payment Management',
   accounts: 'Cash & Bank Management',
   transactions: 'Transaction History',
-  budgets: 'Budget Management',
   reports: 'Financial Reports Center',
   settlement: 'Festival Final Settlement',
-  categories: 'Category Management',
   audit: 'Audit Logs & Activity History',
   settings: 'System & Database Settings'
 };

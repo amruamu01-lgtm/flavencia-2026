@@ -3,6 +3,7 @@ import { useFinance } from '../../context/FinanceContext';
 import { Modal } from '../common/Modal';
 import { PaymentMethod } from '../../types/financial';
 import { formatCurrency, getTodayDateString } from '../../utils/formatters';
+import { CategoryManagementModal } from '../categories/CategoryManagementModal';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
   const [billUrl, setBillUrl] = useState('');
   const [remarks, setRemarks] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isManageCatOpen, setIsManageCatOpen] = useState(false);
 
   React.useEffect(() => {
     if (expenseCategories.length > 0 && !expenseCategories.some(c => c.categoryId === categoryId)) {
@@ -109,45 +111,55 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Record Festival Expense"
-      subtitle="Direct expense booking – zero approval delay"
-      maxWidth="lg"
-    >
-      {error && (
-        <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Date */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
-              Expense Date *
-            </label>
-            <input
-              type="date"
-              required
-              value={date}
-              onChange={e => setDate(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
-            />
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Record Festival Expense"
+        subtitle="Direct expense booking – zero approval delay"
+        maxWidth="lg"
+      >
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-[#DC2626] text-xs font-medium">
+            {error}
           </div>
+        )}
 
-          {/* Category */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
-              Category *
-            </label>
-            <select
-              value={categoryId}
-              onChange={e => setCategoryId(e.target.value)}
-              className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
-            >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Date */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
+                Expense Date *
+              </label>
+              <input
+                type="date"
+                required
+                value={date}
+                onChange={e => setDate(e.target.value)}
+                className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                  Category *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsManageCatOpen(true)}
+                  className="text-[11px] font-semibold text-[#1E3A5F] hover:underline"
+                >
+                  + Categories
+                </button>
+              </div>
+              <select
+                value={categoryId}
+                onChange={e => setCategoryId(e.target.value)}
+                className="w-full text-xs px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:border-[#1E3A5F]"
+              >
               {expenseCategories.map(cat => (
                 <option key={cat.categoryId} value={cat.categoryId}>
                   {cat.categoryName}
@@ -369,5 +381,12 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClos
         </div>
       </form>
     </Modal>
+
+    <CategoryManagementModal
+      isOpen={isManageCatOpen}
+      onClose={() => setIsManageCatOpen(false)}
+      categoryType="EXPENSE"
+    />
+  </>
   );
 };

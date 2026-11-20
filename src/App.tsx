@@ -16,26 +16,17 @@ const IncomeList = React.lazy(() =>
 const ExpenseList = React.lazy(() =>
   import('./components/expenses/ExpenseList').then(m => ({ default: m.ExpenseList }))
 );
-const PaymentHistoryList = React.lazy(() =>
-  import('./components/payments/PaymentHistoryList').then(m => ({ default: m.PaymentHistoryList }))
-);
 const AccountCards = React.lazy(() =>
   import('./components/accounts/AccountCards').then(m => ({ default: m.AccountCards }))
 );
 const TransactionLedger = React.lazy(() =>
   import('./components/transactions/TransactionLedger').then(m => ({ default: m.TransactionLedger }))
 );
-const BudgetTracker = React.lazy(() =>
-  import('./components/budgets/BudgetTracker').then(m => ({ default: m.BudgetTracker }))
-);
 const ReportsCenter = React.lazy(() =>
   import('./components/reports/ReportsCenter').then(m => ({ default: m.ReportsCenter }))
 );
 const FinalSettlementView = React.lazy(() =>
   import('./components/settlement/FinalSettlementView').then(m => ({ default: m.FinalSettlementView }))
-);
-const CategoryManager = React.lazy(() =>
-  import('./components/categories/CategoryManager').then(m => ({ default: m.CategoryManager }))
 );
 const AuditLogViewer = React.lazy(() =>
   import('./components/audit/AuditLogViewer').then(m => ({ default: m.AuditLogViewer }))
@@ -75,20 +66,14 @@ const MainApp: React.FC = () => {
         return <IncomeList />;
       case 'expenses':
         return <ExpenseList />;
-      case 'payments':
-        return <PaymentHistoryList />;
       case 'accounts':
         return <AccountCards />;
       case 'transactions':
         return <TransactionLedger />;
-      case 'budgets':
-        return <BudgetTracker />;
       case 'reports':
         return <ReportsCenter />;
       case 'settlement':
         return <FinalSettlementView />;
-      case 'categories':
-        return <CategoryManager />;
       case 'audit':
         return <AuditLogViewer />;
       case 'settings':

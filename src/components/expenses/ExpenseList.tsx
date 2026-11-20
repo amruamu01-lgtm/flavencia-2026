@@ -6,7 +6,8 @@ import {
   ExternalLink,
   CreditCard,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Tag
 } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { ExpenseRecord } from '../../types/financial';
@@ -14,6 +15,7 @@ import { formatCurrency, formatDate } from '../../utils/formatters';
 import { Badge } from '../common/Badge';
 import { AddExpenseModal } from './AddExpenseModal';
 import { RecordPaymentModal } from '../payments/RecordPaymentModal';
+import { CategoryManagementModal } from '../categories/CategoryManagementModal';
 import { exportExpensesToExcel } from '../../services/exportExcel';
 import { generateExpenseReportPdf } from '../../services/exportPdf';
 
@@ -23,6 +25,7 @@ export const ExpenseList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [paymentTarget, setPaymentTarget] = useState<ExpenseRecord | null>(null);
 
   const displayExpenses = filteredExpenses.filter(item => {
@@ -82,6 +85,15 @@ export const ExpenseList: React.FC = () => {
           >
             <FileText className="w-3.5 h-3.5 text-[#1E3A5F]" />
             PDF
+          </button>
+
+          {/* Manage Expense Categories */}
+          <button
+            onClick={() => setIsCategoryModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors shadow-none"
+          >
+            <Tag className="w-3.5 h-3.5 text-[#1E3A5F]" />
+            Categories
           </button>
 
           {/* Add Expense Button */}
@@ -245,6 +257,13 @@ export const ExpenseList: React.FC = () => {
           onClose={() => setPaymentTarget(null)}
         />
       )}
+
+      {/* Category Management Modal */}
+      <CategoryManagementModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        categoryType="EXPENSE"
+      />
     </div>
   );
 };

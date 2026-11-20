@@ -6,11 +6,13 @@ import {
   FileDown,
   ExternalLink,
   Receipt,
-  FileText
+  FileText,
+  Tag
 } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { AddIncomeModal } from './AddIncomeModal';
+import { CategoryManagementModal } from '../categories/CategoryManagementModal';
 import { exportIncomeToExcel } from '../../services/exportExcel';
 import { generateIncomeReportPdf } from '../../services/exportPdf';
 
@@ -20,6 +22,7 @@ export const IncomeList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [selectedMethod, setSelectedMethod] = useState('ALL');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   // Filtered income rows
   const displayIncome = filteredIncome.filter(item => {
@@ -80,6 +83,15 @@ export const IncomeList: React.FC = () => {
           >
             <FileText className="w-3.5 h-3.5 text-[#1E3A5F]" />
             PDF
+          </button>
+
+          {/* Manage Income Categories */}
+          <button
+            onClick={() => setIsCategoryModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors shadow-none"
+          >
+            <Tag className="w-3.5 h-3.5 text-[#1E3A5F]" />
+            Categories
           </button>
 
           {/* Record Income Button */}
@@ -230,6 +242,13 @@ export const IncomeList: React.FC = () => {
 
       {/* Add Modal */}
       <AddIncomeModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} />
+
+      {/* Category Management Modal */}
+      <CategoryManagementModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        categoryType="INCOME"
+      />
     </div>
   );
 };
